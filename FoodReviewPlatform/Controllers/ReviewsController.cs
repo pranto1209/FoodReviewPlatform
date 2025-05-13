@@ -1,18 +1,13 @@
 ﻿using FoodReviewPlatform.Database;
-using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Services.Interface;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReviewsController(
-        IReviewService reviewService,
-        FoodReviewPlatformDbContext context) : ControllerBase
+    public class ReviewsController(IReviewService reviewService) : ControllerBase
     {
         [HttpGet("get-reviews")]
         public async Task<IActionResult> GetReviews([FromQuery] long locationId)
@@ -44,7 +39,6 @@ namespace FoodReviewPlatform.Controllers
         [HttpDelete("delete-review/{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] long id)
         {
-            
             await reviewService.DeleteReview(id);
 
             return Ok();

@@ -1,4 +1,6 @@
-﻿using FoodReviewPlatform.Database.Entities;
+﻿using System;
+using System.Collections.Generic;
+using FoodReviewPlatform.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Database;
@@ -29,6 +31,8 @@ public partial class FoodReviewPlatformDbContext : DbContext
     public virtual DbSet<CheckIn> CheckIns { get; set; }
 
     public virtual DbSet<Location> Locations { get; set; }
+
+    public virtual DbSet<Restaurant> Restaurants { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -135,21 +139,29 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('locations_id_seq'::regclass)")
                 .HasColumnName("id");
-            entity.Property(e => e.Address)
-                .HasMaxLength(256)
-                .HasColumnName("address");
             entity.Property(e => e.Area)
                 .HasMaxLength(256)
                 .HasColumnName("area");
-            entity.Property(e => e.AverageRating).HasColumnName("average_rating");
-            entity.Property(e => e.Category)
-                .HasMaxLength(256)
-                .HasColumnName("category");
             entity.Property(e => e.Latitude).HasColumnName("latitude");
             entity.Property(e => e.Longitude).HasColumnName("longitude");
+        });
+
+        modelBuilder.Entity<Restaurant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_restaurants");
+
+            entity.ToTable("restaurant");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(256)
                 .HasColumnName("name");
+
+            entity.HasOne(d => d.Location).WithMany(p => p.Restaurants)
+                .HasForeignKey(d => d.LocationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_restaurant_locations_location_id");
         });
 
         modelBuilder.Entity<Review>(entity =>
@@ -164,10 +176,10 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.Comment)
                 .HasMaxLength(256)
                 .HasColumnName("comment");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.InsertionTime).HasColumnName("insertion_time");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
+            entity.Property(e => e.ModificationTime).HasColumnName("modification_time");
             entity.Property(e => e.Rating).HasColumnName("rating");
-            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Location).WithMany(p => p.Reviews)

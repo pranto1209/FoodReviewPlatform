@@ -14,14 +14,14 @@ namespace FoodReviewPlatform.Services.Implementation
             var reviews = await (from r in context.Reviews
                                  join u in context.Users on r.UserId equals u.Id
                                  where r.LocationId == locationId
-                                 orderby r.UpdatedAt.HasValue descending, r.UpdatedAt descending, r.CreatedAt descending
+                                 orderby r.ModificationTime.HasValue descending, r.ModificationTime descending, r.InsertionTime descending
                                  select new ReviewResponse
                                  {
                                      UserName = u.UserName,
                                      Rating = r.Rating,
                                      Comment = r.Comment,
-                                     CreatedAt = r.CreatedAt,
-                                     UpdatedAt = r.UpdatedAt
+                                     InsertionTime = r.InsertionTime,
+                                     ModificationTime = r.ModificationTime
                                  })
                                  .ToListAsync();
 
@@ -46,7 +46,7 @@ namespace FoodReviewPlatform.Services.Implementation
                 LocationId = request.LocationId,
                 Rating = request.Rating,
                 Comment = request.Comment,
-                CreatedAt = DateTime.UtcNow
+                InsertionTime = DateTime.UtcNow
             };
 
             await context.Reviews.AddAsync(review);
@@ -67,7 +67,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             review.Rating = request.Rating;
             review.Comment = request.Comment;
-            review.UpdatedAt = DateTime.UtcNow;
+            review.InsertionTime = DateTime.UtcNow;
 
             await context.SaveChangesAsync();
         }

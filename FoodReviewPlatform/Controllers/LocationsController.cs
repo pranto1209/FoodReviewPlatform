@@ -1,4 +1,5 @@
 ﻿using FoodReviewPlatform.Database;
+using FoodReviewPlatform.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,67 +9,47 @@ namespace FoodReviewPlatform.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly FoodReviewPlatformDbContext _context;
+        private readonly FoodReviewPlatformDbContext context;
 
         public LocationsController(FoodReviewPlatformDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetLocations([FromQuery] string area = null, [FromQuery] string category = null)
+        [HttpGet("get-locations")]
+        public async Task<IActionResult> GetLocations()
         {
-            var query = _context.Locations.AsQueryable();
+            var query = await context.Locations.ToListAsync();
 
-            if (!string.IsNullOrEmpty(area))
-            {
-                query = query.Where(l => l.Area == area);
-            }
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                query = query.Where(l => l.Category == category);
-            }
-
-            var locations = await query.ToListAsync();
-            return Ok(locations);
+            return Ok(query);
         }
 
-        [HttpGet("nearby")]
-        public async Task<IActionResult> GetNearbyLocations([FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radiusKm = 5)
+        [HttpGet("get-restaurants-by-location")]
+        public async Task<IActionResult> GetRestaurantsByLocation([FromQuery] long id)
         {
-            // This is a simplified version - for production, consider using spatial queries
-            var locations = await _context.Locations
-                .Where(l => l.Latitude != null && l.Longitude != null)
-                .ToListAsync();
+            var query = await (from l in context.Locations.Where(l => l.Id == id)
+                               join r in context.Restaurants on l.Id equals r.LocationId
+                               orderby r.Name
+                               select new RestaurantResponse
+                               {
+                                   Id = r.Id,
+                                   Name = r.Name,
+                                   Area = l.Area
+                               })
+                               .ToListAsync();
 
-            var nearbyLocations = locations
-                .Where(l => CalculateDistance(latitude, longitude, l.Latitude.Value, l.Longitude.Value) <= radiusKm)
-                .ToList();
-
-            return Ok(nearbyLocations);
+            return Ok(query);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetLocation(int id)
+        [HttpGet("get-nearby-locations")]
+        public async Task<IActionResult> GetNearbyLocations([FromQuery] double latitude, [FromQuery] double longitude)
         {
-            var location = await _context.Locations
-                .Include(l => l.Reviews)
-                .ThenInclude(r => r.User)
-                .FirstOrDefaultAsync(l => l.Id == id);
+            var query = await (from l in context.Locations.Where(l => l.Latitude != null && l.Longitude != null)
+                               orderby CalculateDistance(latitude, longitude, l.Latitude.Value, l.Longitude.Value) ascending
+                               select l)
+                               .ToListAsync();
 
-            if (location == null)
-            {
-                return NotFound();
-            }
-
-            // Calculate average rating
-            if (location.Reviews.Any())
-            {
-                location.AverageRating = location.Reviews.Average(r => r.Rating);
-            }
-
-            return Ok(location);
+            return Ok(query);
         }
 
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)

@@ -1,6 +1,4 @@
-﻿using FoodReviewPlatform.Database.Entities;
-
-namespace FoodReviewPlatform.Models.Request
+﻿namespace FoodReviewPlatform.Models.Request
 {
     public class CreateReviewRequest
     {

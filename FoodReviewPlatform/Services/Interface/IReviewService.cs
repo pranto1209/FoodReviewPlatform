@@ -1,6 +1,5 @@
 ﻿using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FoodReviewPlatform.Services.Interface
 {

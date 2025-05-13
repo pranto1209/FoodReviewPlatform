@@ -1,4 +1,7 @@
-﻿namespace FoodReviewPlatform.Database.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace FoodReviewPlatform.Database.Entities;
 
 public partial class Review
 {
@@ -8,9 +11,9 @@ public partial class Review
 
     public string Comment { get; set; } = null!;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime InsertionTime { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? ModificationTime { get; set; }
 
     public long UserId { get; set; }
 
