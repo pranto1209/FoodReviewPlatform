@@ -14,9 +14,9 @@ namespace FoodReviewPlatform.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await authService.Login(request);
+            var response = await authService.Login(request);
 
-            return Ok(result);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -31,9 +31,9 @@ namespace FoodReviewPlatform.Controllers
         [HttpPost("login-user")]
         public async Task<IActionResult> LoginUser(LoginRequest request)
         {
-            var result = await authService.LoginUser(request);
+            var response = await authService.LoginUser(request);
 
-            return Ok(result);
+            return Ok(response);
         }
 
         [HttpPost("register-user")]

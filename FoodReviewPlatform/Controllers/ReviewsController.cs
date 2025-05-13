@@ -1,5 +1,7 @@
 ﻿using FoodReviewPlatform.Database;
 using FoodReviewPlatform.Database.Entities;
+using FoodReviewPlatform.Models.Request;
+using FoodReviewPlatform.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,98 +10,44 @@ namespace FoodReviewPlatform.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
-    public class ReviewsController : ControllerBase
+    public class ReviewsController(
+        IReviewService reviewService,
+        FoodReviewPlatformDbContext context) : ControllerBase
     {
-        private readonly FoodReviewPlatformDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ReviewsController(FoodReviewPlatformDbContext context, IHttpContextAccessor httpContextAccessor)
+        [HttpGet("get-reviews")]
+        public async Task<IActionResult> GetReviews([FromQuery] long locationId)
         {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            var response = await reviewService.GetReviews(locationId);
+
+            return Ok(response);
         }
 
-        [HttpGet("location/{locationId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetLocationReviews(int locationId)
+        //[Authorize]
+        [HttpPost("create-review")]
+        public async Task<IActionResult> CreateReview([FromBody] CreateReviewRequest request)
         {
-            var reviews = await _context.Reviews
-                .Include(r => r.User)
-                .Where(r => r.LocationId == locationId)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync();
+            await reviewService.CreateReview(request);
 
-            return Ok(reviews);
+            return Ok();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateReview(Review createReviewDto)
+        //[Authorize]
+        [HttpPut("update-review")]
+        public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewRequest request)
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            await reviewService.UpdateReview(request);
 
-            var existingReview = await _context.Reviews
-                .FirstOrDefaultAsync(r => r.UserId == userId && r.LocationId == createReviewDto.LocationId);
-
-            if (existingReview != null)
-            {
-                return BadRequest("You have already reviewed this location");
-            }
-
-            var review = new Review
-            {
-                UserId = userId,
-                LocationId = createReviewDto.LocationId,
-                Rating = createReviewDto.Rating,
-                Comment = createReviewDto.Comment
-            };
-
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            return Ok(review);
+            return Ok();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReview(int id, Review updateReviewDto)
+        //[Authorize]
+        [HttpDelete("delete-review/{id}")]
+        public async Task<IActionResult> DeleteReview([FromRoute] long id)
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            
+            await reviewService.DeleteReview(id);
 
-            var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
-
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            review.Rating = updateReviewDto.Rating;
-            review.Comment = updateReviewDto.Comment;
-            review.UpdatedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(review);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview(int id)
-        {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
-
-            var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
-
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok();
         }
     }
 }
