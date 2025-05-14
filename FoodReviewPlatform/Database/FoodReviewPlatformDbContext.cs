@@ -170,22 +170,23 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
             entity.ToTable("review");
 
+            entity.HasIndex(e => e.RestaurantId, "fki_fk_reviews_restaurants_restaurant_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('reviews_id_seq'::regclass)")
                 .HasColumnName("id");
             entity.Property(e => e.Comment)
                 .HasMaxLength(256)
                 .HasColumnName("comment");
-            entity.Property(e => e.InsertionTime).HasColumnName("insertion_time");
-            entity.Property(e => e.LocationId).HasColumnName("location_id");
-            entity.Property(e => e.ModificationTime).HasColumnName("modification_time");
             entity.Property(e => e.Rating).HasColumnName("rating");
+            entity.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
+            entity.Property(e => e.ReviewTime).HasColumnName("review_time");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Location).WithMany(p => p.Reviews)
-                .HasForeignKey(d => d.LocationId)
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.RestaurantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_reviews_locations_location_id");
+                .HasConstraintName("fk_reviews_restaurants_restaurant_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.UserId)

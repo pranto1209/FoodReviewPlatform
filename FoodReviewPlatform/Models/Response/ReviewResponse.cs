@@ -1,11 +1,15 @@
-﻿namespace FoodReviewPlatform.Models.Response
+﻿using FoodReviewPlatform.Database.Entities;
+
+namespace FoodReviewPlatform.Models.Response
 {
     public class ReviewResponse
     {
+        public long Id { get; set; }
         public string UserName { get; set; }
+        public string RestaurantName { get; set; }
+        public string Area { get; set; }
         public int Rating { get; set; }
         public string? Comment { get; set; }
-        public DateTime InsertionTime { get; set; }
-        public DateTime? ModificationTime { get; set; }
+        public DateTime ReviewTime { get; set; }
     }
 }

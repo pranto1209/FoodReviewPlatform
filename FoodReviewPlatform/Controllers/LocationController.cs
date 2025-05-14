@@ -1,4 +1,5 @@
 ﻿using FoodReviewPlatform.Database;
+using FoodReviewPlatform.Models.Domain;
 using FoodReviewPlatform.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,34 +8,52 @@ namespace FoodReviewPlatform.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationsController : ControllerBase
+    public class LocationController : ControllerBase
     {
         private readonly FoodReviewPlatformDbContext context;
 
-        public LocationsController(FoodReviewPlatformDbContext context)
+        public LocationController(FoodReviewPlatformDbContext context)
         {
             this.context = context;
         }
 
         [HttpGet("get-locations")]
-        public async Task<IActionResult> GetLocations()
+        public async Task<IActionResult> GetLocations([FromQuery] Pagination request)
         {
-            var query = await context.Locations.ToListAsync();
+            var query = from l in context.Locations
+                        orderby l.Id
+                        select new LocationReposne
+                        {
+                            Id = l.Id,
+                            Area = l.Area,
+                            Latitude = l.Latitude,
+                            Longitude = l.Longitude
+                        };
 
-            return Ok(query);
+            var response = new PaginatedData<LocationReposne>
+            {
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                Total = await query.CountAsync(),
+                Data = request.IsPaginated
+                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
+                            : await query.ToListAsync()
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("get-restaurants-by-location")]
         public async Task<IActionResult> GetRestaurantsByLocation([FromQuery] long id)
         {
-            var query = await (from l in context.Locations.Where(l => l.Id == id)
-                               join r in context.Restaurants on l.Id equals r.LocationId
-                               orderby r.Name
+            var query = await (from location in context.Locations.Where(l => l.Id == id)
+                               join restaurant in context.Restaurants on location.Id equals restaurant.LocationId
+                               orderby restaurant.Name
                                select new RestaurantResponse
                                {
-                                   Id = r.Id,
-                                   Name = r.Name,
-                                   Area = l.Area
+                                   Id = restaurant.Id,
+                                   Name = restaurant.Name,
+                                   Area = location.Area
                                })
                                .ToListAsync();
 

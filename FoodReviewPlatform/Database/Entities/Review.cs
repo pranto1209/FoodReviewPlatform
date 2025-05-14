@@ -9,17 +9,15 @@ public partial class Review
 
     public int Rating { get; set; }
 
-    public string Comment { get; set; } = null!;
+    public string? Comment { get; set; }
 
-    public DateTime InsertionTime { get; set; }
-
-    public DateTime? ModificationTime { get; set; }
+    public DateTime ReviewTime { get; set; }
 
     public long UserId { get; set; }
 
-    public long LocationId { get; set; }
+    public long RestaurantId { get; set; }
 
-    public virtual Location Location { get; set; } = null!;
+    public virtual Restaurant Restaurant { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

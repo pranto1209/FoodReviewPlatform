@@ -9,44 +9,96 @@ namespace FoodReviewPlatform.Services.Implementation
 {
     public class ReviewService(FoodReviewPlatformDbContext context) : IReviewService
     {
-        public async Task<IEnumerable<ReviewResponse>> GetReviews(long locationId)
+        public async Task<IEnumerable<ReviewResponse>> GetReviewsByRestaurant(long restaurantId)
         {
-            var reviews = await (from r in context.Reviews
-                                 join u in context.Users on r.UserId equals u.Id
-                                 where r.LocationId == locationId
-                                 orderby r.ModificationTime.HasValue descending, r.ModificationTime descending, r.InsertionTime descending
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 join location in context.Locations on restaurant.LocationId equals location.Id
+                                 join user in context.Users on review.UserId equals user.Id
+                                 where review.RestaurantId == restaurantId
+                                 orderby review.ReviewTime descending
                                  select new ReviewResponse
                                  {
-                                     UserName = u.UserName,
-                                     Rating = r.Rating,
-                                     Comment = r.Comment,
-                                     InsertionTime = r.InsertionTime,
-                                     ModificationTime = r.ModificationTime
+                                     Id = review.Id,
+                                     UserName = user.UserName,
+                                     RestaurantName = restaurant.Name,
+                                     Area = location.Area,
+                                     Rating = review.Rating,
+                                     Comment = review.Comment,
+                                     ReviewTime = review.ReviewTime
                                  })
                                  .ToListAsync();
 
             return reviews;
         }
 
-        public async Task CreateReview(CreateReviewRequest request)
+        public async Task<ReviewResponse> GetUserReviewByRestaurant(long restaurantId)
+        {
+            var userId = 1;
+
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 join location in context.Locations on restaurant.LocationId equals location.Id
+                                 join user in context.Users on review.UserId equals user.Id
+                                 where user.Id == userId && review.RestaurantId == restaurantId
+                                 orderby review.ReviewTime descending
+                                 select new ReviewResponse
+                                 {
+                                     Id = review.Id,
+                                     UserName = user.UserName,
+                                     RestaurantName = restaurant.Name,
+                                     Area = location.Area,
+                                     Rating = review.Rating,
+                                     Comment = review.Comment,
+                                     ReviewTime = review.ReviewTime
+                                 })
+                                 .FirstOrDefaultAsync();
+
+            return reviews!;
+        }
+
+        public async Task<ReviewResponse> GetReviewById(long id)
+        {
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 join location in context.Locations on restaurant.LocationId equals location.Id
+                                 join user in context.Users on review.UserId equals user.Id
+                                 where review.Id == id
+                                 orderby review.ReviewTime descending
+                                 select new ReviewResponse
+                                 {
+                                     Id = review.Id,
+                                     UserName = user.UserName,
+                                     RestaurantName = restaurant.Name,
+                                     Area = location.Area,
+                                     Rating = review.Rating,
+                                     Comment = review.Comment,
+                                     ReviewTime = review.ReviewTime
+                                 })
+                                 .FirstOrDefaultAsync();
+
+            return reviews!;
+        }
+
+        public async Task AddReview(AddReviewRequest request)
         {
             //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userId = 1;
 
-            var existingReview = await context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.LocationId == request.LocationId);
+            var existingReview = await context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.RestaurantId == request.RestaurantId);
 
             if (existingReview != null)
             {
                 throw new Exception("You have already reviewed this location");
             }
 
-            var review = new Review
+            var review = new Review 
             {
                 UserId = userId,
-                LocationId = request.LocationId,
+                RestaurantId = request.RestaurantId,
                 Rating = request.Rating,
                 Comment = request.Comment,
-                InsertionTime = DateTime.UtcNow
+                ReviewTime = DateTime.UtcNow
             };
 
             await context.Reviews.AddAsync(review);
@@ -67,7 +119,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             review.Rating = request.Rating;
             review.Comment = request.Comment;
-            review.InsertionTime = DateTime.UtcNow;
+            review.ReviewTime = DateTime.UtcNow;
 
             await context.SaveChangesAsync();
         }

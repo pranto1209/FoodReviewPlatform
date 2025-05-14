@@ -12,4 +12,6 @@ public partial class Restaurant
     public long LocationId { get; set; }
 
     public virtual Location Location { get; set; } = null!;
+
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

@@ -16,6 +16,4 @@ public partial class Location
     public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
 
     public virtual ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
-
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

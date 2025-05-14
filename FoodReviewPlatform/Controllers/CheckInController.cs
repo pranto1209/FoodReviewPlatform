@@ -8,26 +8,26 @@ namespace FoodReviewPlatform.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class CheckInsController : ControllerBase
+    public class CheckInController : ControllerBase
     {
-        private readonly FoodReviewPlatformDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly FoodReviewPlatformDbContext context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CheckInsController(FoodReviewPlatformDbContext context, IHttpContextAccessor httpContextAccessor)
+        public CheckInController(FoodReviewPlatformDbContext context, IHttpContextAccessor httpContextAccessor)
         {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
         public async Task<IActionResult> CheckIn(CheckIn createCheckInDto)
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userId = 1;
 
             // Check if user already checked in today
             var today = DateTime.UtcNow.Date;
-            var existingCheckIn = await _context.CheckIns
+            var existingCheckIn = await context.CheckIns
                 .FirstOrDefaultAsync(c => c.UserId == userId &&
                                          c.LocationId == createCheckInDto.LocationId &&
                                          c.CheckInTime.Date == today);
@@ -44,8 +44,8 @@ namespace FoodReviewPlatform.Controllers
                 CheckInTime = DateTime.UtcNow
             };
 
-            _context.CheckIns.Add(checkIn);
-            await _context.SaveChangesAsync();
+            context.CheckIns.Add(checkIn);
+            await context.SaveChangesAsync();
 
             return Ok(checkIn);
         }
@@ -53,10 +53,10 @@ namespace FoodReviewPlatform.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUserCheckIns()
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userId = 1;
 
-            var checkIns = await _context.CheckIns
+            var checkIns = await context.CheckIns
                 .Include(c => c.Location)
                 .Where(c => c.UserId == userId)
                 .OrderByDescending(c => c.CheckInTime)
