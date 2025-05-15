@@ -13,7 +13,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> GetReviewsByRestaurant([FromQuery] long id)
         {
             var response = await reviewService.GetReviewsByRestaurant(id);
-
             return Ok(response);
         }
 
@@ -22,7 +21,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
         {
             var response = await reviewService.GetUserReviewsByRestaurant(id);
-
             return Ok(response);
         }
 
@@ -31,7 +29,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> GetReviewById([FromQuery] long id)
         {
             var response = await reviewService.GetReviewById(id);
-
             return Ok(response);
         }
 
@@ -40,7 +37,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> GetReviewsByUser()
         {
             var response = await reviewService.GetReviewsByUser();
-
             return Ok(response);
         }
 
@@ -49,7 +45,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> AddReview([FromBody] AddReviewRequest request)
         {
             await reviewService.AddReview(request);
-
             return Ok();
         }
 
@@ -58,7 +53,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewRequest request)
         {
             await reviewService.UpdateReview(request);
-
             return Ok();
         }
 
@@ -67,7 +61,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> DeleteReview([FromRoute] long id)
         {
             await reviewService.DeleteReview(id);
-
             return Ok();
         }
     }

@@ -3,15 +3,23 @@ using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class CheckInService(FoodReviewPlatformDbContext context) : ICheckInService
+    public class CheckInService(
+        FoodReviewPlatformDbContext context,
+        IHttpContextAccessor httpContextAccessor) : ICheckInService
     {
         public async Task<IEnumerable<CheckInResponse>> GetUserCheckInByRestaurant(long restaurantId)
         {
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var reviews = await (from checkIn in context.CheckIns
                                  join restaurant in context.Restaurants on checkIn.RestaurantId equals restaurant.Id
@@ -34,8 +42,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<CheckInResponse>> GetCheckInsByUser()
         {
-            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var checkIns = await (from checkIn in context.CheckIns
                                   join restaurant in context.Restaurants on checkIn.RestaurantId equals restaurant.Id
@@ -58,8 +70,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task AddCheckIn(AddCheckInRequest request)
         {
-            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var today = DateTime.UtcNow.Date;
 
@@ -85,8 +101,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task DeleteCheckIn(long id)
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var checkIn = await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
 

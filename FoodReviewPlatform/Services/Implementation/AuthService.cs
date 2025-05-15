@@ -49,6 +49,7 @@ namespace FoodReviewPlatform.Services.Implementation
         {
             var user = new IdentityUser
             {
+                UserName = request.UserName.Trim(),
                 Email = request.Email.Trim()
             };
 
@@ -102,6 +103,7 @@ namespace FoodReviewPlatform.Services.Implementation
         {
             var user = new User
             {
+                UserName = request.UserName.Trim(),
                 Email = request.Email.Trim(),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 InsertionTime = DateTime.UtcNow,

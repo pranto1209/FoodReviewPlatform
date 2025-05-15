@@ -13,7 +13,5 @@ public partial class Location
 
     public double? Longitude { get; set; }
 
-    public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
-
     public virtual ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
 }

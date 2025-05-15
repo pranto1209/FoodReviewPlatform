@@ -10,14 +10,15 @@ namespace FoodReviewPlatform.Services.Implementation
     {
         public async Task<PaginatedData<LocationReposne>> GetLocations(FilteringRequest request)
         {
-            var query = from l in context.Locations
-                        orderby l.Id
+            var query = from location in context.Locations
+                        where (string.IsNullOrEmpty(request.SearchText) || location.Area.ToLower().Contains(request.SearchText.ToLower()))
+                        orderby location.Id
                         select new LocationReposne
                         {
-                            Id = l.Id,
-                            Area = l.Area,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude
+                            Id = location.Id,
+                            Area = location.Area,
+                            Latitude = location.Latitude,
+                            Longitude = location.Longitude
                         };
 
             var response = new PaginatedData<LocationReposne>
@@ -35,14 +36,14 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<PaginatedData<LocationReposne>> GetNearbyLocations(double latitude, double longitude, FilteringRequest request)
         {
-            var query = from l in context.Locations.Where(l => l.Latitude != null && l.Longitude != null)
-                        orderby CalculateDistance(latitude, longitude, l.Latitude.Value, l.Longitude.Value) ascending
+            var query = from location in context.Locations.Where(l => l.Latitude != null && l.Longitude != null)
+                        orderby CalculateDistance(latitude, longitude, location.Latitude.Value, location.Longitude.Value) ascending
                         select new LocationReposne
                         {
-                            Id = l.Id,
-                            Area = l.Area,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude
+                            Id = location.Id,
+                            Area = location.Area,
+                            Latitude = location.Latitude,
+                            Longitude = location.Longitude
                         };
 
             var response = new PaginatedData<LocationReposne>

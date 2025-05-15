@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class ReviewService(FoodReviewPlatformDbContext context,
+    public class ReviewService(
+        FoodReviewPlatformDbContext context,
         IHttpContextAccessor httpContextAccessor) : IReviewService
     {
         public async Task<IEnumerable<ReviewResponse>> GetReviewsByRestaurant(long restaurantId)
@@ -35,7 +36,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId)
         {
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var reviews = await (from review in context.Reviews
                                  join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
@@ -83,7 +89,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<ReviewResponse>> GetReviewsByUser()
         {
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var reviews = await (from review in context.Reviews
                                  join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
@@ -108,9 +119,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task AddReview(AddReviewRequest request)
         {
-            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userIdString = httpContextAccessor.HttpContext.Request.Headers["UserId"];
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var review = new Review
             {
@@ -127,8 +141,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task UpdateReview(UpdateReviewRequest request)
         {
-            //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == request.Id && r.UserId == userId);
 
@@ -146,8 +164,12 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task DeleteReview(long id)
         {
-            //var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userId = 1;
+            var userIdHeader = httpContextAccessor.HttpContext.Request.Headers["UserId"];
+
+            if (!long.TryParse(userIdHeader, out var userId))
+            {
+                throw new InvalidOperationException("Invalid UserId in header");
+            }
 
             var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 

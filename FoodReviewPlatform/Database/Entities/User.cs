@@ -13,7 +13,7 @@ public partial class User
 
     public bool? EmailConfirmed { get; set; }
 
-    public string? PasswordHash { get; set; }
+    public string PasswordHash { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
 
