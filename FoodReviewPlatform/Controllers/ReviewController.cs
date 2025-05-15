@@ -1,5 +1,6 @@
 ﻿using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodReviewPlatform.Controllers
@@ -16,7 +17,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("get-user-reviews-by-restaurant")]
         public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
         {
@@ -25,7 +26,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("get-review-by-id")]
         public async Task<IActionResult> GetReviewById([FromQuery] long id)
         {
@@ -34,7 +35,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("get-reviews-by-user")]
         public async Task<IActionResult> GetReviewsByUser()
         {
@@ -43,7 +44,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("add-review")]
         public async Task<IActionResult> AddReview([FromBody] AddReviewRequest request)
         {
@@ -52,7 +53,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPut("update-review")]
         public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewRequest request)
         {
@@ -61,7 +62,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("delete-review/{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] long id)
         {

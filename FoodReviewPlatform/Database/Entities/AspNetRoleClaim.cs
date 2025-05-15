@@ -1,4 +1,7 @@
-﻿namespace FoodReviewPlatform.Database.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace FoodReviewPlatform.Database.Entities;
 
 public partial class AspNetRoleClaim
 {

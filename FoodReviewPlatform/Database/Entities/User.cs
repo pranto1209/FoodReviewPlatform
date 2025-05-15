@@ -1,4 +1,7 @@
-﻿namespace FoodReviewPlatform.Database.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace FoodReviewPlatform.Database.Entities;
 
 public partial class User
 {
@@ -17,6 +20,8 @@ public partial class User
     public bool? PhoneNumberConfirmed { get; set; }
 
     public DateTime InsertionTime { get; set; }
+
+    public string Role { get; set; } = null!;
 
     public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
 

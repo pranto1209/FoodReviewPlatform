@@ -1,4 +1,6 @@
-﻿using FoodReviewPlatform.Database.Entities;
+﻿using System;
+using System.Collections.Generic;
+using FoodReviewPlatform.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Database;
@@ -213,6 +215,9 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
             entity.Property(e => e.PhoneNumberConfirmed).HasColumnName("phone_number_confirmed");
+            entity.Property(e => e.Role)
+                .HasMaxLength(256)
+                .HasColumnName("role");
             entity.Property(e => e.UserName)
                 .HasMaxLength(256)
                 .HasColumnName("user_name");

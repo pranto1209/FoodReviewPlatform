@@ -36,6 +36,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             var response = new LoginResponse
             {
+                UserId = identityUser.Id,
                 Email = request.Email,
                 Roles = roles.ToList(),
                 Token = jwtToken
@@ -48,7 +49,6 @@ namespace FoodReviewPlatform.Services.Implementation
         {
             var user = new IdentityUser
             {
-                UserName = request.UserName.Trim(),
                 Email = request.Email.Trim()
             };
 
@@ -83,11 +83,15 @@ namespace FoodReviewPlatform.Services.Implementation
                 throw new Exception("Invalid password");
             }
 
-            var jwtToken = tokenService.CreateJwtToken(identityUser);
+            var roles = new List<string> { identityUser.Role };
+
+            var jwtToken = tokenService.CreateJwtToken(identityUser, roles);
 
             var response = new LoginResponse
             {
+                UserId = identityUser.Id.ToString(),
                 Email = request.Email,
+                Roles = roles,
                 Token = jwtToken
             };
 
@@ -98,10 +102,10 @@ namespace FoodReviewPlatform.Services.Implementation
         {
             var user = new User
             {
-                UserName = request.UserName.Trim(),
                 Email = request.Email.Trim(),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 InsertionTime = DateTime.UtcNow,
+                Role = UserRoleClass.User,
             };
 
             if (await context.Users.AnyAsync(u => u.Email == user.Email))

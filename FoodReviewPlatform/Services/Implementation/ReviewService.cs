@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class ReviewService(FoodReviewPlatformDbContext context) : IReviewService
+    public class ReviewService(FoodReviewPlatformDbContext context,
+        IHttpContextAccessor httpContextAccessor) : IReviewService
     {
         public async Task<IEnumerable<ReviewResponse>> GetReviewsByRestaurant(long restaurantId)
         {
@@ -108,6 +109,7 @@ namespace FoodReviewPlatform.Services.Implementation
         public async Task AddReview(AddReviewRequest request)
         {
             //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdString = httpContextAccessor.HttpContext.Request.Headers["UserId"];
             var userId = 1;
 
             var review = new Review

@@ -21,14 +21,20 @@ public partial class AuthDbContext : IdentityDbContext
         base.OnModelCreating(modelBuilder);
 
         var roles = new List<IdentityRole>
-            {
-                new IdentityRole()
-                {
-                    Id = UserRoleClass.User,
-                    Name = UserRoleClass.User,
-                    NormalizedName = UserRoleClass.User.ToUpper()
-                }
-            };
+                    {
+                        new IdentityRole()
+                        {
+                            Id = UserRoleClass.User,
+                            Name = UserRoleClass.User,
+                            NormalizedName = UserRoleClass.User.ToUpper()
+                        },
+                        new IdentityRole()
+                        {
+                            Id = UserRoleClass.Admin,
+                            Name = UserRoleClass.Admin,
+                            NormalizedName = UserRoleClass.Admin.ToUpper()
+                        }
+                    };
 
         modelBuilder.Entity<IdentityRole>().HasData(roles);
     }
