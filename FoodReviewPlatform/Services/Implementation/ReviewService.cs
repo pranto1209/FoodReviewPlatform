@@ -35,6 +35,18 @@ namespace FoodReviewPlatform.Services.Implementation
             return reviews;
         }
 
+        public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
+        {
+            var reviews = await(from review in context.Reviews
+                                join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                where review.RestaurantId == restaurantId
+                                select review.Rating).ToListAsync();
+
+            var averageRating = reviews.Count() > 0 ? reviews.Average() : 0.0;
+
+            return averageRating;
+        }
+
         public async Task<IEnumerable<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId)
         {
             var userId = httpContextAccessor.GetUserId();

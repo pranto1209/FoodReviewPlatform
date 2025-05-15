@@ -16,6 +16,13 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
+        [HttpGet("get-average-rating-by-restaurant")]
+        public async Task<IActionResult> GetAverageRatingByRestaurant([FromQuery] long id)
+        {
+            var response = await reviewService.GetAverageRatingByRestaurant(id);
+            return Ok(response);
+        }
+
         [Authorize]
         [HttpGet("get-user-reviews-by-restaurant")]
         public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
