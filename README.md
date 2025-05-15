@@ -27,6 +27,6 @@ This is an **ASP.NET Web API** project that allows users to discover restaurants
 ---
 
 ## Screenshots
-![](Docs/11.png)
+![](Docs/1.png)
 
-![](Docs/12.png)
+![](Docs/2.png)
