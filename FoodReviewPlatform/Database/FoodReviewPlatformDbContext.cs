@@ -112,17 +112,23 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
             entity.ToTable("check_in");
 
+            entity.HasIndex(e => e.RestaurantId, "fki_fk_check_ins_restaurants_restaurant_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('check_ins_id_seq'::regclass)")
                 .HasColumnName("id");
             entity.Property(e => e.CheckInTime).HasColumnName("check_in_time");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
+            entity.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Location).WithMany(p => p.CheckIns)
                 .HasForeignKey(d => d.LocationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_check_ins_locations_location_id");
+
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.CheckIns)
+                .HasForeignKey(d => d.RestaurantId)
+                .HasConstraintName("fk_check_ins_restaurants_restaurant_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.CheckIns)
                 .HasForeignKey(d => d.UserId)
@@ -175,9 +181,7 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('reviews_id_seq'::regclass)")
                 .HasColumnName("id");
-            entity.Property(e => e.Comment)
-                .HasMaxLength(256)
-                .HasColumnName("comment");
+            entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
             entity.Property(e => e.ReviewTime).HasColumnName("review_time");

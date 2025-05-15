@@ -18,17 +18,25 @@ namespace FoodReviewPlatform.Controllers
         }
 
         [HttpGet("get-user-reviews-by-restaurant")]
-        public async Task<IActionResult> GetUserReviewByRestaurant([FromQuery] long id)
+        public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
         {
-            var response = await reviewService.GetUserReviewByRestaurant(id);
+            var response = await reviewService.GetUserReviewsByRestaurant(id);
 
             return Ok(response);
         }
 
         [HttpGet("get-review-by-id")]
-        public async Task<IActionResult> GetReviewsById([FromQuery] long id)
+        public async Task<IActionResult> GetReviewById([FromQuery] long id)
         {
             var response = await reviewService.GetReviewById(id);
+
+            return Ok(response);
+        }
+
+        [HttpGet("get-reviews-by-user")]
+        public async Task<IActionResult> GetReviewsByUser()
+        {
+            var response = await reviewService.GetReviewsByUser();
 
             return Ok(response);
         }

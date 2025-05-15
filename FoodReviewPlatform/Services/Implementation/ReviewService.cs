@@ -32,7 +32,7 @@ namespace FoodReviewPlatform.Services.Implementation
             return reviews;
         }
 
-        public async Task<ReviewResponse> GetUserReviewByRestaurant(long restaurantId)
+        public async Task<IEnumerable<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId)
         {
             var userId = 1;
 
@@ -52,9 +52,9 @@ namespace FoodReviewPlatform.Services.Implementation
                                      Comment = review.Comment,
                                      ReviewTime = review.ReviewTime
                                  })
-                                 .FirstOrDefaultAsync();
+                                 .ToListAsync();
 
-            return reviews!;
+            return reviews;
         }
 
         public async Task<ReviewResponse> GetReviewById(long id)
@@ -80,17 +80,35 @@ namespace FoodReviewPlatform.Services.Implementation
             return reviews!;
         }
 
+        public async Task<IEnumerable<ReviewResponse>> GetReviewsByUser()
+        {
+            var userId = 1;
+
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 join location in context.Locations on restaurant.LocationId equals location.Id
+                                 join user in context.Users on review.UserId equals user.Id
+                                 where user.Id == userId
+                                 orderby review.ReviewTime descending
+                                 select new ReviewResponse
+                                 {
+                                     Id = review.Id,
+                                     UserName = user.UserName,
+                                     RestaurantName = restaurant.Name,
+                                     Area = location.Area,
+                                     Rating = review.Rating,
+                                     Comment = review.Comment,
+                                     ReviewTime = review.ReviewTime
+                                 })
+                                 .ToListAsync();
+
+            return reviews;
+        }
+
         public async Task AddReview(AddReviewRequest request)
         {
             //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userId = 1;
-
-            var existingReview = await context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.RestaurantId == request.RestaurantId);
-
-            if (existingReview != null)
-            {
-                throw new Exception("You have already reviewed this location");
-            }
 
             var review = new Review 
             {
