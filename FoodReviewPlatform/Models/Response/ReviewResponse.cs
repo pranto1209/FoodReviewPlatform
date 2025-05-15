@@ -1,6 +1,4 @@
-﻿using FoodReviewPlatform.Database.Entities;
-
-namespace FoodReviewPlatform.Models.Response
+﻿namespace FoodReviewPlatform.Models.Response
 {
     public class ReviewResponse
     {

@@ -1,5 +1,4 @@
-﻿using FoodReviewPlatform.Database;
-using FoodReviewPlatform.Models.Request;
+﻿using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +16,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
+        //[Authorize]
         [HttpGet("get-user-reviews-by-restaurant")]
         public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
         {
@@ -25,6 +25,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
+        //[Authorize]
         [HttpGet("get-review-by-id")]
         public async Task<IActionResult> GetReviewById([FromQuery] long id)
         {
@@ -33,6 +34,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
+        //[Authorize]
         [HttpGet("get-reviews-by-user")]
         public async Task<IActionResult> GetReviewsByUser()
         {

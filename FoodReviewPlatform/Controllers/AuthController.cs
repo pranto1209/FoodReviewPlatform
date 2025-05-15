@@ -13,7 +13,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var response = await authService.Login(request);
-
             return Ok(response);
         }
 
@@ -22,7 +21,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             await authService.Register(request);
-
             return Ok();
         }
 
@@ -30,7 +28,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> LoginUser(LoginRequest request)
         {
             var response = await authService.LoginUser(request);
-
             return Ok(response);
         }
 
@@ -38,7 +35,6 @@ namespace FoodReviewPlatform.Controllers
         public async Task<IActionResult> RegisterUser(RegisterRequest request)
         {
             await authService.RegisterUser(request);
-
             return Ok();
         }
     }

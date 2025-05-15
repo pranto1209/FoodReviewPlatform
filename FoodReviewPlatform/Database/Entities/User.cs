@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FoodReviewPlatform.Database.Entities;
+﻿namespace FoodReviewPlatform.Database.Entities;
 
 public partial class User
 {

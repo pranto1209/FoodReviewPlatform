@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FoodReviewPlatform.Database.Entities;
+﻿using FoodReviewPlatform.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Database;

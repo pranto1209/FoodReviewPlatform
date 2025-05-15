@@ -110,7 +110,7 @@ namespace FoodReviewPlatform.Services.Implementation
             //var userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userId = 1;
 
-            var review = new Review 
+            var review = new Review
             {
                 UserId = userId,
                 RestaurantId = request.RestaurantId,
