@@ -16,11 +16,9 @@ public partial class User
 
     public bool? PhoneNumberConfirmed { get; set; }
 
+    public bool? TwoFactorEnabled { get; set; }
+
     public DateTime InsertionTime { get; set; }
 
-    public string Role { get; set; } = null!;
-
-    public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
-
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public DateTime? ModificationTime { get; set; }
 }

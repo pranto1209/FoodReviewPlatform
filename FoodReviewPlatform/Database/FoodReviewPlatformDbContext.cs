@@ -22,25 +22,21 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
     public virtual DbSet<Review> Reviews { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=FoodReviewPlatformDB;User Id=postgres;Password=1209;");
+    public virtual DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CheckIn>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_check_ins");
+            entity.HasKey(e => e.Id).HasName("pk_check_in");
 
             entity.ToTable("check_in");
 
-            entity.HasIndex(e => e.RestaurantId, "fki_fk_check_ins_restaurants_restaurant_id");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("nextval('check_ins_id_seq'::regclass)")
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CheckInTime).HasColumnName("check_in_time");
             entity.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -48,17 +44,12 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.HasOne(d => d.Restaurant).WithMany(p => p.CheckIns)
                 .HasForeignKey(d => d.RestaurantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_check_ins_restaurants_restaurant_id");
-
-            entity.HasOne(d => d.User).WithMany(p => p.CheckIns)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_check_ins_users_user_id");
+                .HasConstraintName("fk_check_in_restaurant_restaurant_id");
         });
 
         modelBuilder.Entity<Location>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_locations");
+            entity.HasKey(e => e.Id).HasName("pk_location");
 
             entity.ToTable("location");
 
@@ -74,7 +65,7 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
         modelBuilder.Entity<Restaurant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_restaurants");
+            entity.HasKey(e => e.Id).HasName("pk_restaurant");
 
             entity.ToTable("restaurant");
 
@@ -87,20 +78,16 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.HasOne(d => d.Location).WithMany(p => p.Restaurants)
                 .HasForeignKey(d => d.LocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_restaurant_locations_location_id");
+                .HasConstraintName("fk_restaurant_location_location_id");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_reviews");
+            entity.HasKey(e => e.Id).HasName("pk_review");
 
             entity.ToTable("review");
 
-            entity.HasIndex(e => e.RestaurantId, "fki_fk_reviews_restaurants_restaurant_id");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("nextval('reviews_id_seq'::regclass)")
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
@@ -110,37 +97,52 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.HasOne(d => d.Restaurant).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.RestaurantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_reviews_restaurants_restaurant_id");
+                .HasConstraintName("fk_review_restaurant_restaurant_id");
+        });
 
-            entity.HasOne(d => d.User).WithMany(p => p.Reviews)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_reviews_users_user_id");
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_role");
+
+            entity.ToTable("role");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(256)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("pk_users");
+            entity.HasKey(e => e.Id).HasName("pk_user");
 
             entity.ToTable("user");
 
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("nextval('users_id_seq'::regclass)")
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email)
                 .HasMaxLength(256)
                 .HasColumnName("email");
             entity.Property(e => e.EmailConfirmed).HasColumnName("email_confirmed");
             entity.Property(e => e.InsertionTime).HasColumnName("insertion_time");
+            entity.Property(e => e.ModificationTime).HasColumnName("modification_time");
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
             entity.Property(e => e.PhoneNumberConfirmed).HasColumnName("phone_number_confirmed");
-            entity.Property(e => e.Role)
-                .HasMaxLength(256)
-                .HasColumnName("role");
+            entity.Property(e => e.TwoFactorEnabled).HasColumnName("two_factor_enabled");
             entity.Property(e => e.UserName)
                 .HasMaxLength(256)
                 .HasColumnName("user_name");
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_user_role");
+
+            entity.ToTable("user_role");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

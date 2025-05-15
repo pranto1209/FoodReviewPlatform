@@ -27,10 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DbScripts\" />
+    <Folder Include="LocalHelper\" />
     <Folder Include="Repositories\Implementation\" />
     <Folder Include="Repositories\Interface\" />
-    <Folder Include="Utilities\" />
   </ItemGroup>
 
 </Project>

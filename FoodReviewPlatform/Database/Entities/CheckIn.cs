@@ -11,6 +11,4 @@ public partial class CheckIn
     public long RestaurantId { get; set; }
 
     public virtual Restaurant Restaurant { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
 }

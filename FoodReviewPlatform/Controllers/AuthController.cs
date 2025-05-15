@@ -8,22 +8,6 @@ namespace FoodReviewPlatform.Controllers
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        [HttpPost]
-        [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var response = await authService.Login(request);
-            return Ok(response);
-        }
-
-        [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
-        {
-            await authService.Register(request);
-            return Ok();
-        }
-
         [HttpPost("login-user")]
         public async Task<IActionResult> LoginUser(LoginRequest request)
         {
