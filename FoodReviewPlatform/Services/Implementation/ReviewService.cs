@@ -37,10 +37,10 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
         {
-            var reviews = await(from review in context.Reviews
-                                join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                                where review.RestaurantId == restaurantId
-                                select review.Rating).ToListAsync();
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 where review.RestaurantId == restaurantId
+                                 select review.Rating).ToListAsync();
 
             var averageRating = reviews.Count() > 0 ? reviews.Average() : 0.0;
 

@@ -28,8 +28,6 @@
 
   <ItemGroup>
     <Folder Include="LocalHelper\" />
-    <Folder Include="Repositories\Implementation\" />
-    <Folder Include="Repositories\Interface\" />
   </ItemGroup>
 
 </Project>

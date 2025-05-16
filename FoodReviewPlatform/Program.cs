@@ -1,6 +1,5 @@
 using FoodReviewPlatform.Database;
-using FoodReviewPlatform.Services.Implementation;
-using FoodReviewPlatform.Services.Interface;
+using FoodReviewPlatform.Utilities.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,11 +20,11 @@ builder.Services.AddDbContext<FoodReviewPlatformDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICheckInService, CheckInService>();
-builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+//builder.Services.RegisterDatabases(builder.Configuration);
+
+builder.Services.RegisterServices();
+
+builder.Services.RegisterRepositories();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

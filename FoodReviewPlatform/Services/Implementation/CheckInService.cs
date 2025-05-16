@@ -80,7 +80,7 @@ namespace FoodReviewPlatform.Services.Implementation
                 CheckInTime = DateTime.UtcNow
             };
 
-            context.CheckIns.Add(checkIn);
+            await context.CheckIns.AddAsync(checkIn);
             await context.SaveChangesAsync();
         }
 
