@@ -4,6 +4,8 @@ using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
 using FoodReviewPlatform.Utilities.Audit;
+using FoodReviewPlatform.Utilities.DateTimeManager;
+using FoodReviewPlatform.Utilities.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
@@ -54,15 +56,17 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task AddCheckIn(AddCheckInRequest request)
         {
-            var today = DateTime.UtcNow.Date;
+            var today = DateTime.UtcNow.ConvertIntoLocalTime();
 
             var existingCheckIn = await context.CheckIns
-                .Where(c => c.UserId == AuditContext.UserId && c.RestaurantId == request.RestaurantId && c.CheckInTime.Date == today)
+                .Where(c => c.UserId == AuditContext.UserId &&
+                            c.RestaurantId == request.RestaurantId &&
+                            c.CheckInTime.AddHours(6).Date == DateTime.UtcNow.AddHours(6).Date)
                 .FirstOrDefaultAsync();
 
             if (existingCheckIn != null)
             {
-                throw new Exception("You have already checked in this restaurant today");
+                throw new CustomException("You have already checked in this restaurant today");
             }
 
             var checkIn = new CheckIn
@@ -82,7 +86,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             if (checkIn == null)
             {
-                throw new Exception("Check In not found");
+                throw new CustomException("Check In not found");
             }
 
             context.CheckIns.Remove(checkIn);

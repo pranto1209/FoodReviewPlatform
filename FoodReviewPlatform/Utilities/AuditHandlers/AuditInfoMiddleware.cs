@@ -29,11 +29,11 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
         {
             if (context.Request.Headers.ContainsKey("Authorization"))
             {
-                string authHeader = context.Request.Headers["Authorization"];
+                string authorization = context.Request.Headers["Authorization"];
 
-                if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                if (authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                 {
-                    return authHeader.Substring("Bearer ".Length).Trim();
+                    return authorization.Substring("Bearer ".Length).Trim();
                 }
             }
 

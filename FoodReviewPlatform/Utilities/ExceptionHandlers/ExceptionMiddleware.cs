@@ -21,7 +21,7 @@ namespace FoodReviewPlatform.Utilities.ExceptionHandlers
 
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            string customMessage = "";
+            string customMessage;
 
             if (exception.GetType() == typeof(CustomException))
             {
@@ -29,26 +29,7 @@ namespace FoodReviewPlatform.Utilities.ExceptionHandlers
             }
             else
             {
-                if (context.Request.Method == "GET")
-                {
-                    customMessage = "Failed to read";
-                }
-                if (context.Request.Method == "POST")
-                {
-                    customMessage = "Failed to create";
-                }
-                else if (context.Request.Method == "PUT")
-                {
-                    customMessage = "Failed to update";
-                }
-                else if (context.Request.Method == "DELETE")
-                {
-                    customMessage = "Failed to delete";
-                }
-                else
-                {
-                    customMessage = "Failed operation";
-                }
+                customMessage = "Failed operation";
             }
 
             var response = JsonSerializer.Serialize(new

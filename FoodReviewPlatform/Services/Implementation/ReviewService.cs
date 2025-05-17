@@ -4,6 +4,7 @@ using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
 using FoodReviewPlatform.Utilities.Audit;
+using FoodReviewPlatform.Utilities.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
@@ -135,7 +136,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             if (review == null)
             {
-                throw new Exception("Review not found");
+                throw new CustomException("Review not found");
             }
 
             review.Rating = request.Rating;
@@ -151,7 +152,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             if (review == null)
             {
-                throw new Exception("Review not found");
+                throw new CustomException("Review not found");
             }
 
             context.Reviews.Remove(review);

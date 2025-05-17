@@ -4,16 +4,9 @@
     {
         private static readonly AsyncLocal<AuditInfo> auditInfo = new AsyncLocal<AuditInfo>();
 
-        private static AuditInfo Current
+        public static AuditInfo Current
         {
-            get
-            {
-                if (auditInfo.Value == null)
-                {
-                    auditInfo.Value = new AuditInfo();
-                }
-                return auditInfo.Value;
-            }
+            get => auditInfo.Value ??= new AuditInfo();
             set => auditInfo.Value = value;
         }
 

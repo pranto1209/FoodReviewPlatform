@@ -4,6 +4,7 @@ using FoodReviewPlatform.Models.Domain;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
+using FoodReviewPlatform.Utilities.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,14 +24,14 @@ namespace FoodReviewPlatform.Services.Implementation
 
             if (user is null)
             {
-                throw new Exception("User not found");
+                throw new CustomException("User not found");
             }
 
             var checkPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
 
             if (!checkPassword)
             {
-                throw new Exception("Invalid password");
+                throw new CustomException("Invalid password");
             }
 
             var roles = await (from userRole in context.UserRoles
@@ -67,7 +68,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
                     if (await context.Users.AnyAsync(u => u.Email == user.Email))
                     {
-                        throw new Exception("User already exists");
+                        throw new CustomException("User already exists");
                     }
 
                     await context.Users.AddAsync(user);
