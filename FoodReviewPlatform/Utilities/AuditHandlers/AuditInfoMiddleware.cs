@@ -12,11 +12,11 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
             await next(context);
         }
 
-        private static long GetCurrentUserId(HttpContext httpContext)
+        private static long GetCurrentUserId(HttpContext context)
         {
-            if (httpContext.Request.Headers.ContainsKey("UserId"))
+            if (context.Request.Headers.ContainsKey("UserId"))
             {
-                string userId = httpContext.Request.Headers["UserId"];
+                string userId = context.Request.Headers["UserId"];
 
                 if (string.IsNullOrEmpty(userId)) return 0;
 
@@ -25,11 +25,11 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
 
             return 0;
         }
-        private static string GetBearerToken(HttpContext httpContext)
+        private static string GetBearerToken(HttpContext context)
         {
-            if (httpContext.Request.Headers.ContainsKey("Authorization"))
+            if (context.Request.Headers.ContainsKey("Authorization"))
             {
-                string authHeader = httpContext.Request.Headers["Authorization"];
+                string authHeader = context.Request.Headers["Authorization"];
 
                 if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                 {

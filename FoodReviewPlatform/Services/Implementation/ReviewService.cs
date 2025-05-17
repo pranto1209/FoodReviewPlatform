@@ -3,14 +3,12 @@ using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
-using FoodReviewPlatform.Utilities.Extensions;
+using FoodReviewPlatform.Utilities.Audit;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class ReviewService(
-        FoodReviewPlatformDbContext context,
-        IHttpContextAccessor httpContextAccessor) : IReviewService
+    public class ReviewService(FoodReviewPlatformDbContext context) : IReviewService
     {
         public async Task<IEnumerable<ReviewResponse>> GetReviewsByRestaurant(long restaurantId)
         {
@@ -49,13 +47,11 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId)
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var reviews = await (from review in context.Reviews
                                  join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
                                  join location in context.Locations on restaurant.LocationId equals location.Id
                                  join user in context.Users on review.UserId equals user.Id
-                                 where user.Id == userId && review.RestaurantId == restaurantId
+                                 where user.Id == AuditContext.UserId && review.RestaurantId == restaurantId
                                  orderby review.ReviewTime descending
                                  select new ReviewResponse
                                  {
@@ -97,13 +93,11 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<ReviewResponse>> GetReviewsByUser()
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var reviews = await (from review in context.Reviews
                                  join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
                                  join location in context.Locations on restaurant.LocationId equals location.Id
                                  join user in context.Users on review.UserId equals user.Id
-                                 where user.Id == userId
+                                 where user.Id == AuditContext.UserId
                                  orderby review.ReviewTime descending
                                  select new ReviewResponse
                                  {
@@ -122,11 +116,9 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task AddReview(AddReviewRequest request)
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var review = new Review
             {
-                UserId = userId,
+                UserId = AuditContext.UserId,
                 RestaurantId = request.RestaurantId,
                 Rating = request.Rating,
                 Comment = request.Comment,
@@ -139,9 +131,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task UpdateReview(UpdateReviewRequest request)
         {
-            var userId = httpContextAccessor.GetUserId();
-
-            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == request.Id && r.UserId == userId);
+            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == request.Id && r.UserId == AuditContext.UserId);
 
             if (review == null)
             {
@@ -157,9 +147,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task DeleteReview(long id)
         {
-            var userId = httpContextAccessor.GetUserId();
-
-            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == AuditContext.UserId);
 
             if (review == null)
             {

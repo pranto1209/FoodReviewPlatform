@@ -38,7 +38,7 @@ namespace FoodReviewPlatform.Services.Implementation
                                where userRole.UserId == user.Id
                                select role.Name).ToListAsync();
 
-            var jwtToken = CreateJwtToken(user, roles);
+            var jwtToken = CreateJwtToken(user, roles, configuration);
 
             var response = new LoginResponse
             {
@@ -91,7 +91,7 @@ namespace FoodReviewPlatform.Services.Implementation
             }
         }
 
-        public string CreateJwtToken(User user, List<string> roles)
+        private static string CreateJwtToken(User user, List<string> roles, IConfiguration configuration)
         {
             var claims = new List<Claim>
             {
@@ -100,7 +100,10 @@ namespace FoodReviewPlatform.Services.Implementation
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
 

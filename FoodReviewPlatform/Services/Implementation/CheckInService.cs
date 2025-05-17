@@ -3,24 +3,20 @@ using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
-using FoodReviewPlatform.Utilities.Extensions;
+using FoodReviewPlatform.Utilities.Audit;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class CheckInService(
-        FoodReviewPlatformDbContext context,
-        IHttpContextAccessor httpContextAccessor) : ICheckInService
+    public class CheckInService(FoodReviewPlatformDbContext context) : ICheckInService
     {
         public async Task<IEnumerable<CheckInResponse>> GetUserCheckInByRestaurant(long restaurantId)
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var reviews = await (from checkIn in context.CheckIns
                                  join restaurant in context.Restaurants on checkIn.RestaurantId equals restaurant.Id
                                  join location in context.Locations on restaurant.LocationId equals location.Id
                                  join user in context.Users on checkIn.UserId equals user.Id
-                                 where user.Id == userId && checkIn.RestaurantId == restaurantId
+                                 where user.Id == AuditContext.UserId && checkIn.RestaurantId == restaurantId
                                  orderby checkIn.CheckInTime descending
                                  select new CheckInResponse
                                  {
@@ -37,13 +33,11 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task<IEnumerable<CheckInResponse>> GetCheckInsByUser()
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var checkIns = await (from checkIn in context.CheckIns
                                   join restaurant in context.Restaurants on checkIn.RestaurantId equals restaurant.Id
                                   join location in context.Locations on restaurant.LocationId equals location.Id
                                   join user in context.Users on checkIn.UserId equals user.Id
-                                  where user.Id == userId
+                                  where user.Id == AuditContext.UserId
                                   orderby checkIn.CheckInTime descending
                                   select new CheckInResponse
                                   {
@@ -60,12 +54,10 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task AddCheckIn(AddCheckInRequest request)
         {
-            var userId = httpContextAccessor.GetUserId();
-
             var today = DateTime.UtcNow.Date;
 
             var existingCheckIn = await context.CheckIns
-                .Where(c => c.UserId == userId && c.RestaurantId == request.RestaurantId && c.CheckInTime.Date == today)
+                .Where(c => c.UserId == AuditContext.UserId && c.RestaurantId == request.RestaurantId && c.CheckInTime.Date == today)
                 .FirstOrDefaultAsync();
 
             if (existingCheckIn != null)
@@ -75,7 +67,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
             var checkIn = new CheckIn
             {
-                UserId = userId,
+                UserId = AuditContext.UserId,
                 RestaurantId = request.RestaurantId,
                 CheckInTime = DateTime.UtcNow
             };
@@ -86,9 +78,7 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task DeleteCheckIn(long id)
         {
-            var userId = httpContextAccessor.GetUserId();
-
-            var checkIn = await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+            var checkIn = await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == AuditContext.UserId);
 
             if (checkIn == null)
             {

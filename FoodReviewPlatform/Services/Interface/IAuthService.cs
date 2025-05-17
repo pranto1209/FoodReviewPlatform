@@ -1,5 +1,4 @@
-﻿using FoodReviewPlatform.Database.Entities;
-using FoodReviewPlatform.Models.Request;
+﻿using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 
 namespace FoodReviewPlatform.Services.Interface
@@ -8,6 +7,5 @@ namespace FoodReviewPlatform.Services.Interface
     {
         Task<LoginResponse> LoginUser(LoginRequest request);
         Task RegisterUser(RegisterRequest request);
-        string CreateJwtToken(User user, List<string> roles);
     }
 }
