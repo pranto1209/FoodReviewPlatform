@@ -1,4 +1,4 @@
-﻿namespace FoodReviewPlatform.Utilities.Extension
+﻿namespace FoodReviewPlatform.Utilities.Extensions
 {
     public static class HttpContextAccessorExtensions
     {

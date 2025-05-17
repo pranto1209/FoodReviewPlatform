@@ -5,7 +5,7 @@ using FoodReviewPlatform.Services.Implementation;
 using FoodReviewPlatform.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodReviewPlatform.Utilities.Extension
+namespace FoodReviewPlatform.Utilities.Extensions
 {
     public static class ServiceCollectionExtension
     {
@@ -23,7 +23,6 @@ namespace FoodReviewPlatform.Utilities.Extension
             services.AddScoped<ICheckInService, CheckInService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IReviewService, ReviewService>();
-            services.AddScoped<ITokenService, TokenService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

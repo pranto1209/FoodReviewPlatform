@@ -3,7 +3,7 @@ using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
-using FoodReviewPlatform.Utilities.Extension;
+using FoodReviewPlatform.Utilities.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation

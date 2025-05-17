@@ -5,12 +5,17 @@ using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 using FoodReviewPlatform.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Transactions;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
     public class AuthService(
         FoodReviewPlatformDbContext context,
-        ITokenService tokenService) : IAuthService
+        IConfiguration configuration) : IAuthService
     {
         public async Task<LoginResponse> LoginUser(LoginRequest request)
         {
@@ -33,7 +38,7 @@ namespace FoodReviewPlatform.Services.Implementation
                                where userRole.UserId == user.Id
                                select role.Name).ToListAsync();
 
-            var jwtToken = tokenService.CreateJwtToken(user, roles);
+            var jwtToken = CreateJwtToken(user, roles);
 
             var response = new LoginResponse
             {
@@ -48,42 +53,67 @@ namespace FoodReviewPlatform.Services.Implementation
 
         public async Task RegisterUser(RegisterRequest request)
         {
-            await using var transaction = await context.Database.BeginTransactionAsync();
-
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var user = new User
+                try
                 {
-                    UserName = request.UserName.Trim(),
-                    Email = request.Email.Trim(),
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    InsertionTime = DateTime.UtcNow
-                };
+                    var user = new User
+                    {
+                        UserName = request.UserName.Trim(),
+                        Email = request.Email.Trim(),
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                        InsertionTime = DateTime.UtcNow
+                    };
 
-                if (await context.Users.AnyAsync(u => u.Email == user.Email))
-                {
-                    throw new Exception("User already exists");
+                    if (await context.Users.AnyAsync(u => u.Email == user.Email))
+                    {
+                        throw new Exception("User already exists");
+                    }
+
+                    await context.Users.AddAsync(user);
+                    await context.SaveChangesAsync();
+
+                    var userRole = new UserRole
+                    {
+                        UserId = user.Id,
+                        RoleId = (int)RoleEnum.User
+                    };
+
+                    await context.UserRoles.AddAsync(userRole);
+                    await context.SaveChangesAsync();
+
+                    scope.Complete();
                 }
-
-                await context.Users.AddAsync(user);
-                await context.SaveChangesAsync();
-
-                var userRole = new UserRole
+                catch (Exception ex)
                 {
-                    UserId = user.Id,
-                    RoleId = (int)RoleEnum.User
-                };
-
-                await context.UserRoles.AddAsync(userRole);
-                await context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
+                    throw;
+                }
             }
-            catch
+        }
+
+        public string CreateJwtToken(User user, List<string> roles)
+        {
+            var claims = new List<Claim>
             {
-                await transaction.RollbackAsync();
-                throw;
-            }
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: configuration["Jwt:Issuer"],
+                audience: configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMonths(1),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
