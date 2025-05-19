@@ -25,7 +25,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("get-location-by-id")]
         public async Task<IActionResult> GetLocationById([FromQuery] long id)
         {
@@ -33,7 +33,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-location")]
         public async Task<IActionResult> AddLocation([FromBody] AddLocationRequest request)
         {
@@ -41,7 +41,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("update-location")]
         public async Task<IActionResult> UpdateLocation([FromBody] UpdateLocationRequest request)
         {
@@ -49,7 +49,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete-location/{id}")]
         public async Task<IActionResult> DeleteLocation([FromRoute] long id)
         {

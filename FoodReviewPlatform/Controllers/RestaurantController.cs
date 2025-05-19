@@ -19,7 +19,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("get-restaurant-by-id")]
         public async Task<IActionResult> GetRestaurantById([FromQuery] long id)
         {
@@ -27,7 +27,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-restaurant")]
         public async Task<IActionResult> AddRestaurant([FromBody] AddRestaurantRequest request)
         {
@@ -35,7 +35,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("update-restaurant")]
         public async Task<IActionResult> UpdateRestaurant([FromBody] UpdateRestaurantRequest request)
         {
@@ -43,7 +43,7 @@ namespace FoodReviewPlatform.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete-restaurant/{id}")]
         public async Task<IActionResult> DeleteRestaurant([FromRoute] long id)
         {
