@@ -1,4 +1,5 @@
-﻿using FoodReviewPlatform.Models.Request;
+﻿using FoodReviewPlatform.Models.Domain;
+using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,9 @@ namespace FoodReviewPlatform.Controllers
     public class ReviewController(IReviewService reviewService) : ControllerBase
     {
         [HttpGet("get-reviews-by-restaurant")]
-        public async Task<IActionResult> GetReviewsByRestaurant([FromQuery] long id)
+        public async Task<IActionResult> GetReviewsByRestaurant([FromQuery] long id, [FromQuery] FilteringRequest request)
         {
-            var response = await reviewService.GetReviewsByRestaurant(id);
+            var response = await reviewService.GetReviewsByRestaurant(id, request);
             return Ok(response);
         }
 
@@ -25,9 +26,9 @@ namespace FoodReviewPlatform.Controllers
 
         [Authorize]
         [HttpGet("get-user-reviews-by-restaurant")]
-        public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id)
+        public async Task<IActionResult> GetUserReviewsByRestaurant([FromQuery] long id, [FromQuery] FilteringRequest request)
         {
-            var response = await reviewService.GetUserReviewsByRestaurant(id);
+            var response = await reviewService.GetUserReviewsByRestaurant(id, request);
             return Ok(response);
         }
 
@@ -41,9 +42,9 @@ namespace FoodReviewPlatform.Controllers
 
         [Authorize]
         [HttpGet("get-reviews-by-user")]
-        public async Task<IActionResult> GetReviewsByUser()
+        public async Task<IActionResult> GetReviewsByUser([FromQuery] FilteringRequest request)
         {
-            var response = await reviewService.GetReviewsByUser();
+            var response = await reviewService.GetReviewsByUser(request);
             return Ok(response);
         }
 

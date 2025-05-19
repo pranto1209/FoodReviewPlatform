@@ -1,4 +1,5 @@
 ﻿using FoodReviewPlatform.Models.Domain;
+using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
 
 namespace FoodReviewPlatform.Services.Interface
@@ -8,5 +9,8 @@ namespace FoodReviewPlatform.Services.Interface
         Task<PaginatedData<LocationReposne>> GetLocations(FilteringRequest request);
         Task<PaginatedData<LocationReposne>> GetNearbyLocations(double latitude, double longitude, FilteringRequest request);
         Task<PaginatedData<RestaurantResponse>> GetRestaurantsByLocation(long id, FilteringRequest request);
+        Task AddLocation(AddLocationRequest request);
+        Task UpdateLocation(UpdateLocationRequest request);
+        Task DeleteLocation(long id);
     }
 }

@@ -34,8 +34,8 @@ namespace FoodReviewPlatform.Repositories.Implementation
                 PageSize = request.PageSize,
                 Total = await query.CountAsync(),
                 Data = request.IsPaginated
-                ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                : await query.ToListAsync()
+                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
+                            : await query.ToListAsync()
             };
 
             return response;
@@ -64,8 +64,8 @@ namespace FoodReviewPlatform.Repositories.Implementation
                 PageSize = request.PageSize,
                 Total = await query.CountAsync(),
                 Data = request.IsPaginated
-                ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                : await query.ToListAsync()
+                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
+                            : await query.ToListAsync()
             };
 
             return response;

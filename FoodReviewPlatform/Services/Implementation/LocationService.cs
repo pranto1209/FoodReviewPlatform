@@ -1,104 +1,69 @@
 ﻿using FoodReviewPlatform.Database;
+using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Domain;
+using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
+using FoodReviewPlatform.Repositories.Interface;
 using FoodReviewPlatform.Services.Interface;
-using Microsoft.EntityFrameworkCore;
+using FoodReviewPlatform.Utilities.Exceptions;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class LocationService(FoodReviewPlatformDbContext context) : ILocationService
+    public class LocationService(ILocationRepository locationRepository, FoodReviewPlatformDbContext context) : ILocationService
     {
         public async Task<PaginatedData<LocationReposne>> GetLocations(FilteringRequest request)
         {
-            var query = from location in context.Locations
-                        where (string.IsNullOrEmpty(request.SearchText) || location.Area.ToLower().Contains(request.SearchText.ToLower()))
-                        orderby location.Id
-                        select new LocationReposne
-                        {
-                            Id = location.Id,
-                            Area = location.Area,
-                            Latitude = location.Latitude,
-                            Longitude = location.Longitude
-                        };
-
-            var response = new PaginatedData<LocationReposne>
-            {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
-            };
-
-            return response;
+            return await locationRepository.GetLocations(request);
         }
 
         public async Task<PaginatedData<LocationReposne>> GetNearbyLocations(double latitude, double longitude, FilteringRequest request)
         {
-            var query = from location in context.Locations.Where(l => l.Latitude != null && l.Longitude != null)
-                        orderby CalculateDistance(latitude, longitude, location.Latitude.Value, location.Longitude.Value) ascending
-                        select new LocationReposne
-                        {
-                            Id = location.Id,
-                            Area = location.Area,
-                            Latitude = location.Latitude,
-                            Longitude = location.Longitude
-                        };
-
-            var response = new PaginatedData<LocationReposne>
-            {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
-            };
-
-            return response;
+            return await locationRepository.GetNearbyLocations(latitude, longitude, request);
         }
 
         public async Task<PaginatedData<RestaurantResponse>> GetRestaurantsByLocation(long id, FilteringRequest request)
         {
-            var query = from location in context.Locations.Where(l => l.Id == id)
-                        join restaurant in context.Restaurants on location.Id equals restaurant.LocationId
-                        orderby restaurant.Name
-                        select new RestaurantResponse
-                        {
-                            Id = restaurant.Id,
-                            Name = restaurant.Name,
-                            Area = location.Area
-                        };
+            return await locationRepository.GetRestaurantsByLocation(id, request);
+        }
 
-            var response = new PaginatedData<RestaurantResponse>
+        public async Task AddLocation(AddLocationRequest request)
+        {
+            var location = new Location
             {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
+                Area = request.Area,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude
             };
 
-            return response;
+            await locationRepository.AddLocation(location);
         }
 
-        private static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        public async Task UpdateLocation(UpdateLocationRequest request)
         {
-            var R = 6371;
-            var dLat = ToRadians(lat2 - lat1);
-            var dLon = ToRadians(lon2 - lon1);
-            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                    Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
-                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c;
+            var location = await locationRepository.GetLocationById(request.Id);
+
+            if (location == null)
+            {
+                throw new CustomException("Location not found");
+            }
+
+            location.Area = request.Area;
+            location.Latitude = request.Latitude;
+            location.Longitude = request.Longitude;
+
+            await locationRepository.UpdateLocation(location);
         }
 
-        private static double ToRadians(double angle)
+        public async Task DeleteLocation(long id)
         {
-            return Math.PI * angle / 180.0;
+            var location = await locationRepository.GetLocationById(id);
+
+            if (location == null)
+            {
+                throw new CustomException("Location not found");
+            }
+
+            await locationRepository.DeleteLocation(location);
         }
     }
 }
