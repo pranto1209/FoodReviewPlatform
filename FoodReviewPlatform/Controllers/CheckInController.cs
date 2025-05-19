@@ -1,4 +1,5 @@
-﻿using FoodReviewPlatform.Models.Request;
+﻿using FoodReviewPlatform.Models.Domain;
+using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,18 +12,16 @@ namespace FoodReviewPlatform.Controllers
     {
         [Authorize]
         [HttpGet("get-user-check-ins-by-restaurant")]
-        public async Task<IActionResult> GetUserCheckInByRestaurant([FromQuery] long id)
+        public async Task<IActionResult> GetUserCheckInByRestaurant([FromQuery] long id, [FromQuery] FilteringRequest request)
         {
-            var response = await checkInService.GetUserCheckInByRestaurant(id);
-            return Ok(response);
+            return Ok(await checkInService.GetUserCheckInByRestaurant(id, request));
         }
 
         [Authorize]
         [HttpGet("get-check-ins-by-user")]
-        public async Task<IActionResult> GetCheckInsByUser()
+        public async Task<IActionResult> GetCheckInsByUser([FromQuery] FilteringRequest request)
         {
-            var response = await checkInService.GetCheckInsByUser();
-            return Ok(response);
+            return Ok(await checkInService.GetCheckInsByUser(request));
         }
 
         [Authorize]
