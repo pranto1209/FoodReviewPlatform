@@ -14,14 +14,16 @@ namespace FoodReviewPlatform.Controllers
         [HttpGet("get-user-check-ins-by-restaurant")]
         public async Task<IActionResult> GetUserCheckInByRestaurant([FromQuery] long id, [FromQuery] FilteringRequest request)
         {
-            return Ok(await checkInService.GetUserCheckInByRestaurant(id, request));
+            var response = await checkInService.GetUserCheckInByRestaurant(id, request);
+            return Ok(response);
         }
 
         [Authorize]
         [HttpGet("get-check-ins-by-user")]
         public async Task<IActionResult> GetCheckInsByUser([FromQuery] FilteringRequest request)
         {
-            return Ok(await checkInService.GetCheckInsByUser(request));
+            var response = await checkInService.GetCheckInsByUser(request);
+            return Ok(response);
         }
 
         [Authorize]

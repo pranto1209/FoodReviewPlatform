@@ -3,6 +3,7 @@ using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Domain;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
+using FoodReviewPlatform.Repositories.Interface;
 using FoodReviewPlatform.Services.Interface;
 using FoodReviewPlatform.Utilities.Audit;
 using FoodReviewPlatform.Utilities.Exceptions;
@@ -10,137 +11,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class ReviewService(FoodReviewPlatformDbContext context) : IReviewService
+    public class ReviewService(IReviewRepository reviewRepository, FoodReviewPlatformDbContext context) : IReviewService
     {
         public async Task<PaginatedData<ReviewResponse>> GetReviewsByRestaurant(long restaurantId, FilteringRequest request)
         {
-            var query = from review in context.Reviews
-                        join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                        join location in context.Locations on restaurant.LocationId equals location.Id
-                        join user in context.Users on review.UserId equals user.Id
-                        where review.RestaurantId == restaurantId
-                        orderby review.ReviewTime descending
-                        select new ReviewResponse
-                        {
-                            Id = review.Id,
-                            UserName = user.UserName,
-                            RestaurantName = restaurant.Name,
-                            Area = location.Area,
-                            Rating = review.Rating,
-                            Comment = review.Comment,
-                            ReviewTime = review.ReviewTime
-                        };
-
-            var response = new PaginatedData<ReviewResponse>
-            {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
-            };
-
-            return response;
+            return await reviewRepository.GetReviewsByRestaurant(restaurantId, request);
         }
 
         public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
         {
-            var reviews = await (from review in context.Reviews
-                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                                 where review.RestaurantId == restaurantId
-                                 select review.Rating).ToListAsync();
-
-            var averageRating = reviews.Count() > 0 ? reviews.Average() : 0.0;
-
-            return averageRating;
+            return await reviewRepository.GetAverageRatingByRestaurant(restaurantId);
         }
 
         public async Task<PaginatedData<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId, FilteringRequest request)
         {
-            var query = from review in context.Reviews
-                        join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                        join location in context.Locations on restaurant.LocationId equals location.Id
-                        join user in context.Users on review.UserId equals user.Id
-                        where user.Id == AuditContext.UserId && review.RestaurantId == restaurantId
-                        orderby review.ReviewTime descending
-                        select new ReviewResponse
-                        {
-                            Id = review.Id,
-                            UserName = user.UserName,
-                            RestaurantName = restaurant.Name,
-                            Area = location.Area,
-                            Rating = review.Rating,
-                            Comment = review.Comment,
-                            ReviewTime = review.ReviewTime
-                        };
-
-            var response = new PaginatedData<ReviewResponse>
-            {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
-            };
-
-            return response;
-        }
-
-        public async Task<ReviewResponse> GetReviewById(long id)
-        {
-            var reviews = await (from review in context.Reviews
-                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                                 join location in context.Locations on restaurant.LocationId equals location.Id
-                                 join user in context.Users on review.UserId equals user.Id
-                                 where review.Id == id
-                                 orderby review.ReviewTime descending
-                                 select new ReviewResponse
-                                 {
-                                     Id = review.Id,
-                                     UserName = user.UserName,
-                                     RestaurantName = restaurant.Name,
-                                     Area = location.Area,
-                                     Rating = review.Rating,
-                                     Comment = review.Comment,
-                                     ReviewTime = review.ReviewTime
-                                 })
-                                 .FirstOrDefaultAsync();
-
-            return reviews!;
+            return await reviewRepository.GetUserReviewsByRestaurant(restaurantId, request);
         }
 
         public async Task<PaginatedData<ReviewResponse>> GetReviewsByUser(FilteringRequest request)
         {
-            var query = from review in context.Reviews
-                        join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                        join location in context.Locations on restaurant.LocationId equals location.Id
-                        join user in context.Users on review.UserId equals user.Id
-                        where user.Id == AuditContext.UserId
-                        orderby review.ReviewTime descending
-                        select new ReviewResponse
-                        {
-                            Id = review.Id,
-                            UserName = user.UserName,
-                            RestaurantName = restaurant.Name,
-                            Area = location.Area,
-                            Rating = review.Rating,
-                            Comment = review.Comment,
-                            ReviewTime = review.ReviewTime
-                        };
+            return await reviewRepository.GetReviewsByUser(request);
+        }
 
-            var response = new PaginatedData<ReviewResponse>
-            {
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Total = await query.CountAsync(),
-                Data = request.IsPaginated
-                            ? await query.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToListAsync()
-                            : await query.ToListAsync()
-            };
-
-            return response;
+        public async Task<Review> GetReviewById(long id)
+        {
+            return await reviewRepository.GetReviewById(id);
         }
 
         public async Task AddReview(AddReviewRequest request)
@@ -154,8 +49,7 @@ namespace FoodReviewPlatform.Services.Implementation
                 ReviewTime = DateTime.UtcNow
             };
 
-            await context.Reviews.AddAsync(review);
-            await context.SaveChangesAsync();
+            await reviewRepository.AddReview(review);
         }
 
         public async Task UpdateReview(UpdateReviewRequest request)
@@ -171,7 +65,7 @@ namespace FoodReviewPlatform.Services.Implementation
             review.Comment = request.Comment;
             review.ReviewTime = DateTime.UtcNow;
 
-            await context.SaveChangesAsync();
+            await reviewRepository.UpdateReview(review);
         }
 
         public async Task DeleteReview(long id)
@@ -183,8 +77,7 @@ namespace FoodReviewPlatform.Services.Implementation
                 throw new CustomException("Review not found");
             }
 
-            context.Reviews.Remove(review);
-            await context.SaveChangesAsync();
+            await reviewRepository.DeleteReview(review);
         }
     }
 }

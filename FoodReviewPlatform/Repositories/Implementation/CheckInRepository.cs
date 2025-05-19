@@ -84,7 +84,7 @@ namespace FoodReviewPlatform.Repositories.Implementation
 
         public async Task<CheckIn> GetCheckInById(long id)
         {
-            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == AuditContext.UserId);
+            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task AddCheckIn(CheckIn request)

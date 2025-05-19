@@ -1,6 +1,6 @@
 ﻿namespace FoodReviewPlatform.Models.Domain
 {
-    public enum RoleEnum
+    public enum UserRoleEnum
     {
         Admin = 1,
         User = 2

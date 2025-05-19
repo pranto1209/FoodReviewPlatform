@@ -1,5 +1,4 @@
-﻿using FoodReviewPlatform.Database;
-using FoodReviewPlatform.Database.Entities;
+﻿using FoodReviewPlatform.Database.Entities;
 using FoodReviewPlatform.Models.Domain;
 using FoodReviewPlatform.Models.Request;
 using FoodReviewPlatform.Models.Response;
@@ -9,7 +8,7 @@ using FoodReviewPlatform.Utilities.Exceptions;
 
 namespace FoodReviewPlatform.Services.Implementation
 {
-    public class LocationService(ILocationRepository locationRepository, FoodReviewPlatformDbContext context) : ILocationService
+    public class LocationService(ILocationRepository locationRepository) : ILocationService
     {
         public async Task<PaginatedData<LocationReposne>> GetLocations(FilteringRequest request)
         {
@@ -21,9 +20,9 @@ namespace FoodReviewPlatform.Services.Implementation
             return await locationRepository.GetNearbyLocations(latitude, longitude, request);
         }
 
-        public async Task<PaginatedData<RestaurantResponse>> GetRestaurantsByLocation(long id, FilteringRequest request)
+        public async Task<Location> GetLocationById(long id)
         {
-            return await locationRepository.GetRestaurantsByLocation(id, request);
+            return await locationRepository.GetLocationById(id);
         }
 
         public async Task AddLocation(AddLocationRequest request)

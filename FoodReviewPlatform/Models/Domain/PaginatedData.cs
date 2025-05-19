@@ -2,9 +2,9 @@
 {
     public class PaginatedData<T>
     {
-        public int PageSize { get; set; }
-        public int PageNumber { get; set; }
+        public long PageSize { get; set; }
+        public long PageNumber { get; set; }
         public long Total { get; set; }
-        public List<T> Data { get; set; }
+        public IEnumerable<T> Data { get; set; }
     }
 }

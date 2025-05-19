@@ -77,7 +77,7 @@ namespace FoodReviewPlatform.Services.Implementation
                     var userRole = new UserRole
                     {
                         UserId = user.Id,
-                        RoleId = (int)RoleEnum.User
+                        RoleId = (int)UserRoleEnum.User
                     };
 
                     await context.UserRoles.AddAsync(userRole);

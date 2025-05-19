@@ -1,5 +1,8 @@
 ﻿using FoodReviewPlatform.Models.Domain;
+using FoodReviewPlatform.Models.Request;
+using FoodReviewPlatform.Services.Implementation;
 using FoodReviewPlatform.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodReviewPlatform.Controllers
@@ -15,18 +18,43 @@ namespace FoodReviewPlatform.Controllers
             return Ok(response);
         }
 
-        [HttpGet("get-restaurants-by-location")]
-        public async Task<IActionResult> GetRestaurantsByLocation([FromQuery] long id, [FromQuery] FilteringRequest request)
-        {
-            var response = await locationService.GetRestaurantsByLocation(id, request);
-            return Ok(response);
-        }
-
         [HttpGet("get-nearby-locations")]
         public async Task<IActionResult> GetNearbyLocations([FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] FilteringRequest request)
         {
             var response = await locationService.GetNearbyLocations(latitude, longitude, request);
             return Ok(response);
+        }
+
+        //[Authorize]
+        [HttpGet("get-location-by-id")]
+        public async Task<IActionResult> GetLocationById([FromQuery] long id)
+        {
+            var response = await locationService.GetLocationById(id);
+            return Ok(response);
+        }
+
+        //[Authorize]
+        [HttpPost("add-location")]
+        public async Task<IActionResult> AddLocation([FromBody] AddLocationRequest request)
+        {
+            await locationService.AddLocation(request);
+            return Ok();
+        }
+
+        //[Authorize]
+        [HttpPut("update-location")]
+        public async Task<IActionResult> UpdateLocation([FromBody] UpdateLocationRequest request)
+        {
+            await locationService.UpdateLocation(request);
+            return Ok();
+        }
+
+        //[Authorize]
+        [HttpDelete("delete-location/{id}")]
+        public async Task<IActionResult> DeleteLocation([FromRoute] long id)
+        {
+            await locationService.DeleteLocation(id);
+            return Ok();
         }
     }
 }

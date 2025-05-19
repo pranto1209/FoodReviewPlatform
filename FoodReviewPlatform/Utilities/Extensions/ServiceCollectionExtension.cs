@@ -22,6 +22,7 @@ namespace FoodReviewPlatform.Utilities.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICheckInService, CheckInService>();
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IReviewService, ReviewService>();
         }
 
@@ -30,6 +31,7 @@ namespace FoodReviewPlatform.Utilities.Extensions
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<ICheckInRepository, CheckInRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
         }
     }
