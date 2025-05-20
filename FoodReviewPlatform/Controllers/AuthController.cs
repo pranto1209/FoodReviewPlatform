@@ -1,5 +1,5 @@
-﻿using FoodReviewPlatform.Models.Request;
-using FoodReviewPlatform.Services.Interface;
+﻿using FoodReviewPlatform.Models.Requests;
+using FoodReviewPlatform.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodReviewPlatform.Controllers

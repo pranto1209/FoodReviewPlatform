@@ -1,5 +1,5 @@
 using Asp.Versioning;
-using FoodReviewPlatform.Database;
+using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Utilities.AuditHandlers;
 using FoodReviewPlatform.Utilities.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

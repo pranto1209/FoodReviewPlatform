@@ -1,4 +1,4 @@
-﻿using FoodReviewPlatform.Utilities.Audit;
+﻿using FoodReviewPlatform.Utilities.Audits;
 
 namespace FoodReviewPlatform.Utilities.AuditHandlers
 {

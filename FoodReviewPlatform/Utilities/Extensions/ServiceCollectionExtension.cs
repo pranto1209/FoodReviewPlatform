@@ -1,8 +1,8 @@
-﻿using FoodReviewPlatform.Database;
-using FoodReviewPlatform.Repositories.Implementation;
-using FoodReviewPlatform.Repositories.Interface;
-using FoodReviewPlatform.Services.Implementation;
-using FoodReviewPlatform.Services.Interface;
+﻿using FoodReviewPlatform.Databases;
+using FoodReviewPlatform.Repositories.Implementations;
+using FoodReviewPlatform.Repositories.Interfaces;
+using FoodReviewPlatform.Services.Implementations;
+using FoodReviewPlatform.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Utilities.Extensions
