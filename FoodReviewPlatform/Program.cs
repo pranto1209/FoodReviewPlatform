@@ -24,8 +24,6 @@ builder.Services.AddDbContext<FoodReviewPlatformDbContext>(options =>
 
 builder.Services.RegisterServices();
 
-builder.Services.RegisterRepositories();
-
 builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;

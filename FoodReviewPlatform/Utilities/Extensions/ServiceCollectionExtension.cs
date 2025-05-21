@@ -3,6 +3,7 @@ using FoodReviewPlatform.Repositories.Implementations;
 using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Services.Implementations;
 using FoodReviewPlatform.Services.Interfaces;
+using FoodReviewPlatform.Utilities.ResourceManagers;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Utilities.Extensions
@@ -19,15 +20,14 @@ namespace FoodReviewPlatform.Utilities.Extensions
 
         public static void RegisterServices(this IServiceCollection services)
         {
+            services.AddScoped<IResourceManager, ResourceManager>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICheckInService, CheckInService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IReviewService, ReviewService>();
-        }
 
-        public static void RegisterRepositories(this IServiceCollection services)
-        {
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<ICheckInRepository, CheckInRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();

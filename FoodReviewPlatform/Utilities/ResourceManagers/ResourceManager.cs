@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace FoodReviewPlatform.Utilities.ResourceManagers
 {
-    public class ResourceManager
+    public class ResourceManager : IResourceManager
     {
         public async Task<T> GetResourceFromUrlAsync<T>(string url, string? token)
         {
@@ -36,7 +36,32 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             RestResponse<T> queryResult = await client.ExecutePostAsync<T>(request);
 
-            Console.WriteLine($"External API Call URL: {url}, {JsonSerializer.Serialize(body)}, Response: {queryResult.Content}");
+            Console.WriteLine($"External Response: {JsonSerializer.Serialize(queryResult)}");
+
+            return queryResult.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> PostResourceToUrlAsync<T>(string url, T body, string? token, string? origin)
+        {
+            var client = new RestClient();
+
+            var request = new RestRequest(url, Method.Post);
+
+            request.AddBody(body);
+
+            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            {
+                request.AddHeader("authorization", token);
+            }
+
+            if (!string.IsNullOrEmpty(origin) && !string.IsNullOrWhiteSpace(origin))
+            {
+                request.AddHeader("origin", origin);
+            }
+
+            RestResponse<T> queryResult = await client.ExecutePostAsync<T>(request);
+
+            Console.WriteLine($"External Response: {JsonSerializer.Serialize(queryResult)}");
 
             return queryResult.IsSuccessStatusCode;
         }
