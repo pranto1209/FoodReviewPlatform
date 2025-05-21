@@ -43,7 +43,6 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
             entity.HasOne(d => d.Restaurant).WithMany(p => p.CheckIns)
                 .HasForeignKey(d => d.RestaurantId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_check_in_restaurant_restaurant_id");
         });
 
@@ -56,11 +55,11 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("nextval('locations_id_seq'::regclass)")
                 .HasColumnName("id");
-            entity.Property(e => e.Area)
-                .HasMaxLength(256)
-                .HasColumnName("area");
             entity.Property(e => e.Latitude).HasColumnName("latitude");
             entity.Property(e => e.Longitude).HasColumnName("longitude");
+            entity.Property(e => e.Name)
+                .HasMaxLength(256)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Restaurant>(entity =>
@@ -77,7 +76,6 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
             entity.HasOne(d => d.Location).WithMany(p => p.Restaurants)
                 .HasForeignKey(d => d.LocationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_restaurant_location_location_id");
         });
 
@@ -96,7 +94,6 @@ public partial class FoodReviewPlatformDbContext : DbContext
 
             entity.HasOne(d => d.Restaurant).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.RestaurantId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_review_restaurant_restaurant_id");
         });
 
@@ -143,6 +140,14 @@ public partial class FoodReviewPlatformDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.UserRoles)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("fk_user_role_role_role_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserRoles)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("fk_user_role_user_user_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

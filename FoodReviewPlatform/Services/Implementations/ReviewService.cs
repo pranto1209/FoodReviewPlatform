@@ -1,5 +1,4 @@
-﻿using FoodReviewPlatform.Databases;
-using FoodReviewPlatform.Databases.Entities;
+﻿using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
 using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
@@ -7,11 +6,10 @@ using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Services.Interfaces;
 using FoodReviewPlatform.Utilities.Audits;
 using FoodReviewPlatform.Utilities.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Services.Implementations
 {
-    public class ReviewService(IReviewRepository reviewRepository, FoodReviewPlatformDbContext context) : IReviewService
+    public class ReviewService(IReviewRepository reviewRepository) : IReviewService
     {
         public async Task<PaginatedData<ReviewResponse>> GetReviewsByRestaurant(long restaurantId, FilteringRequest request)
         {
@@ -54,7 +52,7 @@ namespace FoodReviewPlatform.Services.Implementations
 
         public async Task UpdateReview(UpdateReviewRequest request)
         {
-            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == request.Id && r.UserId == AuditContext.UserId);
+            var review = await reviewRepository.GetReviewById(request.Id);
 
             if (review == null)
             {
@@ -70,7 +68,7 @@ namespace FoodReviewPlatform.Services.Implementations
 
         public async Task DeleteReview(long id)
         {
-            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == AuditContext.UserId);
+            var review = await reviewRepository.GetReviewById(id);
 
             if (review == null)
             {

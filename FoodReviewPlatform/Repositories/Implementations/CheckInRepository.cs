@@ -24,7 +24,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                             Id = checkIn.Id,
                             UserName = user.UserName,
                             RestaurantName = restaurant.Name,
-                            Area = location.Area,
+                            LocationName = location.Name,
                             CheckInTime = checkIn.CheckInTime
                         };
 
@@ -54,7 +54,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                             Id = checkIn.Id,
                             UserName = user.UserName,
                             RestaurantName = restaurant.Name,
-                            Area = location.Area,
+                            LocationName = location.Name,
                             CheckInTime = checkIn.CheckInTime
                         };
 
@@ -84,7 +84,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
 
         public async Task<CheckIn> GetCheckInById(long id)
         {
-            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id);
+            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == AuditContext.UserId);
         }
 
         public async Task AddCheckIn(CheckIn request)

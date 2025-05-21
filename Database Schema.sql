@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS public.check_in
     CONSTRAINT fk_check_in_restaurant_restaurant_id FOREIGN KEY (restaurant_id)
         REFERENCES public.restaurant (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -28,7 +28,7 @@ ALTER TABLE IF EXISTS public.check_in
 CREATE TABLE IF NOT EXISTS public.location
 (
     id bigint NOT NULL DEFAULT nextval('locations_id_seq'::regclass),
-    area character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     latitude double precision,
     longitude double precision,
     CONSTRAINT pk_location PRIMARY KEY (id)
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS public.restaurant
     CONSTRAINT fk_restaurant_location_location_id FOREIGN KEY (location_id)
         REFERENCES public.location (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS public.review
     CONSTRAINT fk_review_restaurant_restaurant_id FOREIGN KEY (restaurant_id)
         REFERENCES public.restaurant (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -138,7 +138,15 @@ CREATE TABLE IF NOT EXISTS public.user_role
     id bigint NOT NULL DEFAULT nextval('user_role_id_seq'::regclass),
     user_id bigint NOT NULL,
     role_id bigint NOT NULL,
-    CONSTRAINT pk_user_role PRIMARY KEY (id)
+    CONSTRAINT pk_user_role PRIMARY KEY (id),
+    CONSTRAINT fk_user_role_role_role_id FOREIGN KEY (role_id)
+        REFERENCES public.role (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT fk_user_role_user_user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;

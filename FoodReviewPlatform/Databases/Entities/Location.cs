@@ -4,7 +4,7 @@ public partial class Location
 {
     public long Id { get; set; }
 
-    public string Area { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
     public double? Latitude { get; set; }
 

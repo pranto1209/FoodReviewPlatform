@@ -21,4 +21,6 @@ public partial class User
     public DateTime InsertionTime { get; set; }
 
     public DateTime? ModificationTime { get; set; }
+
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

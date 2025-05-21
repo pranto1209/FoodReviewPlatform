@@ -23,7 +23,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                             Id = review.Id,
                             UserName = user.UserName,
                             RestaurantName = restaurant.Name,
-                            Area = location.Area,
+                            LocationName = location.Name,
                             Rating = review.Rating,
                             Comment = review.Comment,
                             ReviewTime = review.ReviewTime
@@ -67,7 +67,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                             Id = review.Id,
                             UserName = user.UserName,
                             RestaurantName = restaurant.Name,
-                            Area = location.Area,
+                            LocationName = location.Name,
                             Rating = review.Rating,
                             Comment = review.Comment,
                             ReviewTime = review.ReviewTime
@@ -88,7 +88,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
 
         public async Task<Review> GetReviewById(long id)
         {
-            return await context.Reviews.FirstOrDefaultAsync(c => c.Id == id);
+            return await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == AuditContext.UserId);
         }
 
         public async Task<PaginatedData<ReviewResponse>> GetReviewsByUser(FilteringRequest request)
@@ -104,7 +104,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                             Id = review.Id,
                             UserName = user.UserName,
                             RestaurantName = restaurant.Name,
-                            Area = location.Area,
+                            LocationName = location.Name,
                             Rating = review.Rating,
                             Comment = review.Comment,
                             ReviewTime = review.ReviewTime

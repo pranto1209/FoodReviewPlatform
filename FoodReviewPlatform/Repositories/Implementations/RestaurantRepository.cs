@@ -18,7 +18,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
                         {
                             Id = restaurant.Id,
                             Name = restaurant.Name,
-                            Area = location.Area
+                            LocationName = location.Name
                         };
 
             var response = new PaginatedData<RestaurantResponse>

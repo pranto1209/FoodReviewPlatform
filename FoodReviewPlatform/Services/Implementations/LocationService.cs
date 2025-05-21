@@ -29,7 +29,7 @@ namespace FoodReviewPlatform.Services.Implementations
         {
             var location = new Location
             {
-                Area = request.Area,
+                Name = request.Name,
                 Latitude = request.Latitude,
                 Longitude = request.Longitude
             };
@@ -46,7 +46,7 @@ namespace FoodReviewPlatform.Services.Implementations
                 throw new CustomException("Location not found");
             }
 
-            location.Area = request.Area;
+            location.Name = request.Name;
             location.Latitude = request.Latitude;
             location.Longitude = request.Longitude;
 
