@@ -16,11 +16,6 @@ namespace FoodReviewPlatform.Services.Implementations
             return await reviewRepository.GetReviewsByRestaurant(restaurantId, request);
         }
 
-        public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
-        {
-            return await reviewRepository.GetAverageRatingByRestaurant(restaurantId);
-        }
-
         public async Task<PaginatedData<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId, FilteringRequest request)
         {
             return await reviewRepository.GetUserReviewsByRestaurant(restaurantId, request);
@@ -31,9 +26,24 @@ namespace FoodReviewPlatform.Services.Implementations
             return await reviewRepository.GetReviewsByUser(request);
         }
 
-        public async Task<Review> GetReviewById(long id)
+        public async Task<ReviewResponse> GetReviewById(long id)
         {
-            return await reviewRepository.GetReviewById(id);
+            var review = await reviewRepository.GetReviewById(id);
+
+            var response = new ReviewResponse
+            {
+                Id = id,
+                Rating = review.Rating,
+                Comment = review.Comment,
+                ReviewTime = review.ReviewTime,
+            };
+
+            return response;
+        }
+
+        public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
+        {
+            return await reviewRepository.GetAverageRatingByRestaurant(restaurantId);
         }
 
         public async Task AddReview(AddReviewRequest request)

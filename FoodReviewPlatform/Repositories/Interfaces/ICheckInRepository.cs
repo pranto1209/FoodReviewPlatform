@@ -9,8 +9,8 @@ namespace FoodReviewPlatform.Repositories.Interfaces
     {
         Task<PaginatedData<CheckInResponse>> GetUserCheckInByRestaurant(long restaurantId, FilteringRequest request);
         Task<PaginatedData<CheckInResponse>> GetCheckInsByUser(FilteringRequest request);
-        Task<bool> GetTodaysCheckIn(AddCheckInRequest request);
         Task<CheckIn> GetCheckInById(long id);
+        Task<bool> GetTodaysCheckIn(AddCheckInRequest request);
         Task AddCheckIn(CheckIn request);
         Task DeleteCheckIn(CheckIn request);
     }

@@ -43,18 +43,6 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return response;
         }
 
-        public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
-        {
-            var reviews = await (from review in context.Reviews
-                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
-                                 where review.RestaurantId == restaurantId
-                                 select review.Rating).ToListAsync();
-
-            var averageRating = reviews.Count() > 0 ? reviews.Average() : 0.0;
-
-            return averageRating;
-        }
-
         public async Task<PaginatedData<ReviewResponse>> GetUserReviewsByRestaurant(long restaurantId, FilteringRequest request)
         {
             var query = from review in context.Reviews
@@ -87,11 +75,6 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return response;
         }
 
-        public async Task<Review> GetReviewById(long id)
-        {
-            return await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == AuditContext.UserId);
-        }
-
         public async Task<PaginatedData<ReviewResponse>> GetReviewsByUser(FilteringRequest request)
         {
             var query = from review in context.Reviews
@@ -122,6 +105,23 @@ namespace FoodReviewPlatform.Repositories.Implementations
             };
 
             return response;
+        }
+
+        public async Task<Review> GetReviewById(long id)
+        {
+            return await context.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == AuditContext.UserId);
+        }
+
+        public async Task<double> GetAverageRatingByRestaurant(long restaurantId)
+        {
+            var reviews = await (from review in context.Reviews
+                                 join restaurant in context.Restaurants on review.RestaurantId equals restaurant.Id
+                                 where review.RestaurantId == restaurantId
+                                 select review.Rating).ToListAsync();
+
+            var averageRating = reviews.Count() > 0 ? reviews.Average() : 0.0;
+
+            return averageRating;
         }
 
         public async Task AddReview(Review request)

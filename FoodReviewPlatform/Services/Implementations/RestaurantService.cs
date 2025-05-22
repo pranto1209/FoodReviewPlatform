@@ -15,9 +15,17 @@ namespace FoodReviewPlatform.Services.Implementations
             return await restaurantRepository.GetRestaurantsByLocation(id, request);
         }
 
-        public async Task<Restaurant> GetRestaurantById(long id)
+        public async Task<RestaurantResponse> GetRestaurantById(long id)
         {
-            return await restaurantRepository.GetRestaurantById(id);
+            var restaurant = await restaurantRepository.GetRestaurantById(id);
+
+            var response = new RestaurantResponse
+            {
+                Id = id,
+                Name = restaurant.Name
+            };
+
+            return response;
         }
 
         public async Task AddRestaurant(AddRestaurantRequest request)

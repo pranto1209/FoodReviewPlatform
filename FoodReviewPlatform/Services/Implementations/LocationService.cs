@@ -20,9 +20,19 @@ namespace FoodReviewPlatform.Services.Implementations
             return await locationRepository.GetNearbyLocations(latitude, longitude, request);
         }
 
-        public async Task<Location> GetLocationById(long id)
+        public async Task<LocationReposne> GetLocationById(long id)
         {
-            return await locationRepository.GetLocationById(id);
+            var location = await locationRepository.GetLocationById(id);
+
+            var response = new LocationReposne
+            {
+                Id = id,
+                Name = location.Name,
+                Latitude = location.Latitude,
+                Longitude = location.Longitude
+            };
+
+            return response;
         }
 
         public async Task AddLocation(AddLocationRequest request)

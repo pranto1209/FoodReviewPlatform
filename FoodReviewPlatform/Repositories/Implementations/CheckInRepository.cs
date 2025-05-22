@@ -71,6 +71,11 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return response;
         }
 
+        public async Task<CheckIn> GetCheckInById(long id)
+        {
+            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == AuditContext.UserId);
+        }
+
         public async Task<bool> GetTodaysCheckIn(AddCheckInRequest request)
         {
             var existingCheckIn = await context.CheckIns
@@ -80,11 +85,6 @@ namespace FoodReviewPlatform.Repositories.Implementations
                 .AnyAsync();
 
             return existingCheckIn;
-        }
-
-        public async Task<CheckIn> GetCheckInById(long id)
-        {
-            return await context.CheckIns.FirstOrDefaultAsync(c => c.Id == id && c.UserId == AuditContext.UserId);
         }
 
         public async Task AddCheckIn(CheckIn request)
