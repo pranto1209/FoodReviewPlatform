@@ -1,4 +1,4 @@
-﻿namespace FoodReviewPlatform.Models.Domains
+﻿namespace FoodReviewPlatform.Models.Requests
 {
     public class FilteringRequest
     {

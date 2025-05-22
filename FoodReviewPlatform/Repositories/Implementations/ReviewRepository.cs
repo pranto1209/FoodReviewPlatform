@@ -1,6 +1,7 @@
 ﻿using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
+using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Utilities.Audits;

@@ -1,6 +1,7 @@
 ﻿using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
+using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace FoodReviewPlatform.Repositories.Implementations
         public async Task<PaginatedData<LocationReposne>> GetLocations(FilteringRequest request)
         {
             var query = from location in context.Locations
-                        where string.IsNullOrEmpty(request.SearchText) || location.Name.ToLower().Contains(request.SearchText.ToLower())
+                        where (string.IsNullOrEmpty(request.SearchText) || location.Name.ToLower().Contains(request.SearchText.ToLower()))
                         orderby location.Id
                         select new LocationReposne
                         {

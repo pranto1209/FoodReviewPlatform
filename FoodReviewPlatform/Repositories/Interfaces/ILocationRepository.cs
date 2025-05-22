@@ -1,5 +1,6 @@
 ﻿using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
+using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 
 namespace FoodReviewPlatform.Repositories.Interfaces

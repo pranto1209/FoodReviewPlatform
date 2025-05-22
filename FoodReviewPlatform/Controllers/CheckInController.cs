@@ -1,5 +1,4 @@
-﻿using FoodReviewPlatform.Models.Domains;
-using FoodReviewPlatform.Models.Requests;
+﻿using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

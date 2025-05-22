@@ -1,6 +1,7 @@
 ﻿using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
+using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ namespace FoodReviewPlatform.Repositories.Implementations
         {
             var query = from location in context.Locations.Where(l => l.Id == id)
                         join restaurant in context.Restaurants on location.Id equals restaurant.LocationId
+                        where (location.Id == id &&
+                               (string.IsNullOrEmpty(request.SearchText) || restaurant.Name.ToLower().Contains(request.SearchText.ToLower())))
                         orderby restaurant.Name
                         select new RestaurantResponse
                         {
