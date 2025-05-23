@@ -1,11 +1,10 @@
-﻿using FoodReviewPlatform.Databases;
-using FoodReviewPlatform.Databases.Entities;
+﻿using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Models.Domains;
 using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
+using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Services.Interfaces;
 using FoodReviewPlatform.Utilities.Exceptions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,12 +14,12 @@ using System.Transactions;
 namespace FoodReviewPlatform.Services.Implementations
 {
     public class AuthService(
-        FoodReviewPlatformDbContext context,
+        IAuthRepository authRepository,
         IConfiguration configuration) : IAuthService
     {
         public async Task<LoginResponse> LoginUser(LoginRequest request)
         {
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await authRepository.GetUserByEmail(request.Email);
 
             if (user is null)
             {
@@ -34,10 +33,7 @@ namespace FoodReviewPlatform.Services.Implementations
                 throw new CustomException("Invalid password");
             }
 
-            var roles = await (from userRole in context.UserRoles
-                               join role in context.Roles on userRole.RoleId equals role.Id
-                               where userRole.UserId == user.Id
-                               select role.Name).ToListAsync();
+            var roles = await authRepository.GetRolesByUser(user.Id);
 
             var jwtToken = CreateJwtToken(user, roles, configuration);
 
@@ -66,13 +62,12 @@ namespace FoodReviewPlatform.Services.Implementations
                         InsertionTime = DateTime.UtcNow
                     };
 
-                    if (await context.Users.AnyAsync(u => u.Email == user.Email))
+                    if (await authRepository.GetUserByEmail(request.Email) != null)
                     {
                         throw new CustomException("User already exists");
                     }
 
-                    await context.Users.AddAsync(user);
-                    await context.SaveChangesAsync();
+                    await authRepository.AddUser(user);
 
                     var userRole = new UserRole
                     {
@@ -80,8 +75,7 @@ namespace FoodReviewPlatform.Services.Implementations
                         RoleId = (int)UserRoleEnum.User
                     };
 
-                    await context.UserRoles.AddAsync(userRole);
-                    await context.SaveChangesAsync();
+                    await authRepository.AddUserRole(userRole);
 
                     scope.Complete();
                 }
@@ -90,6 +84,54 @@ namespace FoodReviewPlatform.Services.Implementations
                     throw;
                 }
             }
+        }
+
+        public async Task EditUser(EditUserRequest request)
+        {
+            var user = await authRepository.GetUserByEmail(request.Email);
+
+            if (user is null)
+            {
+                throw new CustomException("User not found");
+            }
+
+            var checkPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            if (!checkPassword)
+            {
+                throw new CustomException("Invalid password");
+            }
+
+            user.UserName = request.NewUserName.Trim();
+            user.Email = request.NewEmail.Trim();
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.ModificationTime = DateTime.UtcNow;
+
+            if (await authRepository.GetUserByEmail(request.NewEmail) != null)
+            {
+                throw new CustomException("Email already exists");
+            }
+
+            await authRepository.EditUser(user);
+        }
+
+        public async Task DeleteUser(DeleteUserRequest request)
+        {
+            var user = await authRepository.GetUserByEmail(request.Email);
+
+            if (user is null)
+            {
+                throw new CustomException("User not found");
+            }
+
+            var checkPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            if (!checkPassword)
+            {
+                throw new CustomException("Invalid password");
+            }
+
+            await authRepository.DeleteUser(user);
         }
 
         private static string CreateJwtToken(User user, List<string> roles, IConfiguration configuration)

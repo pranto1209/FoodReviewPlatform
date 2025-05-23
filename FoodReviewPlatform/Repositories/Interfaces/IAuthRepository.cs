@@ -1,6 +1,14 @@
-﻿namespace FoodReviewPlatform.Repositories.Interfaces
+﻿using FoodReviewPlatform.Databases.Entities;
+
+namespace FoodReviewPlatform.Repositories.Interfaces
 {
     public interface IAuthRepository
     {
+        Task<User> GetUserByEmail(string email);
+        Task<List<string>> GetRolesByUser(long userId);
+        Task AddUser(User user);
+        Task EditUser(User user);
+        Task DeleteUser(User user);
+        Task AddUserRole(UserRole userRole);
     }
 }

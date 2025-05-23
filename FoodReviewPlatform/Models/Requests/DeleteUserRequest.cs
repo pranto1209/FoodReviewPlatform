@@ -2,7 +2,7 @@
 
 namespace FoodReviewPlatform.Models.Requests
 {
-    public class LoginRequest : BaseUserRequest
+    public class DeleteUserRequest : BaseUserRequest
     {
     }
 }

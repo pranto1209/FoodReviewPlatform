@@ -7,5 +7,7 @@ namespace FoodReviewPlatform.Services.Interfaces
     {
         Task<LoginResponse> LoginUser(LoginRequest request);
         Task RegisterUser(RegisterRequest request);
+        Task EditUser(EditUserRequest request);
+        Task DeleteUser(DeleteUserRequest request);
     }
 }
