@@ -16,6 +16,12 @@
             set => Current.UserId = value;
         }
 
+        public static string Email
+        {
+            get => Current.Email;
+            set => Current.Email = value;
+        }
+
         public static string BearerToken
         {
             get => Current.BearerToken;

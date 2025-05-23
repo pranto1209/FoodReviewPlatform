@@ -1,4 +1,5 @@
 ﻿using FoodReviewPlatform.Utilities.Audits;
+using System.Security.Claims;
 
 namespace FoodReviewPlatform.Utilities.AuditHandlers
 {
@@ -7,6 +8,7 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
         public async Task InvokeAsync(HttpContext context)
         {
             AuditContext.UserId = GetCurrentUserId(context);
+            AuditContext.Email = GetCurrentEmail(context);
             AuditContext.BearerToken = GetBearerToken(context);
 
             await next(context);
@@ -14,17 +16,28 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
 
         private static long GetCurrentUserId(HttpContext context)
         {
-            if (context.Request.Headers.ContainsKey("UserId"))
+            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                string userId = context.Request.Headers["UserId"];
-
-                if (string.IsNullOrEmpty(userId)) return 0;
-
                 return long.Parse(userId);
             }
 
             return 0;
         }
+
+        private static string GetCurrentEmail(HttpContext context)
+        {
+            var emailClaim = context.User.FindFirstValue(ClaimTypes.Email);
+
+            if (!string.IsNullOrEmpty(emailClaim))
+            {
+                return emailClaim;
+            }
+
+            return string.Empty;
+        }
+
         private static string GetBearerToken(HttpContext context)
         {
             if (context.Request.Headers.ContainsKey("Authorization"))

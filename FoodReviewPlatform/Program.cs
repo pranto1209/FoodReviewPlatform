@@ -55,8 +55,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<AuditInfoMiddleware>();
-
 //app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
@@ -71,6 +69,8 @@ app.UseCors(options =>
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<AuditInfoMiddleware>();
 
 app.MapControllers();
 
