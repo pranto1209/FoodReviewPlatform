@@ -5,17 +5,7 @@ This is an **ASP.NET Web API** project that allows users to discover restaurants
 
 ## Getting Started
 
-1. Restore dependencies:
-   ```
-   dotnet restore
-   ```
-
-2. Update the database:
-   ```
-   dotnet ef database update
-   ```
-
-3. Run the project:
+Run the project:
    ```
    dotnet run --project FoodReviewPlatform/FoodReviewPlatform.csproj
    ```
@@ -30,3 +20,5 @@ This is an **ASP.NET Web API** project that allows users to discover restaurants
 ![](Docs/1.png)
 
 ![](Docs/2.png)
+
+![](Docs/3.png)
