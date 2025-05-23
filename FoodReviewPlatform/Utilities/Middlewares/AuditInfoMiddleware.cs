@@ -1,7 +1,7 @@
-﻿using FoodReviewPlatform.Utilities.Audits;
+﻿using FoodReviewPlatform.Utilities.AuditInfos;
 using System.Security.Claims;
 
-namespace FoodReviewPlatform.Utilities.AuditHandlers
+namespace FoodReviewPlatform.Utilities.Middlewares
 {
     public class AuditInfoMiddleware(RequestDelegate next)
     {
@@ -18,7 +18,7 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
         {
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrWhiteSpace(userId))
             {
                 return long.Parse(userId);
             }
@@ -30,7 +30,7 @@ namespace FoodReviewPlatform.Utilities.AuditHandlers
         {
             var emailClaim = context.User.FindFirstValue(ClaimTypes.Email);
 
-            if (!string.IsNullOrEmpty(emailClaim))
+            if (!string.IsNullOrWhiteSpace(emailClaim))
             {
                 return emailClaim;
             }

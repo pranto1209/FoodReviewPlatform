@@ -35,14 +35,15 @@ namespace FoodReviewPlatform.Services.Implementations
 
             var roles = await authRepository.GetRolesByUser(user.Id);
 
-            var jwtToken = CreateJwtToken(user, roles, configuration);
+            var token = CreateJwtToken(user, roles, configuration);
 
             var response = new LoginResponse
             {
-                UserId = user.Id.ToString(),
+                Id = user.Id.ToString(),
+                UserName = user.UserName,
                 Email = request.Email,
                 Roles = roles,
-                Token = jwtToken
+                Token = token
             };
 
             return response;
@@ -86,45 +87,49 @@ namespace FoodReviewPlatform.Services.Implementations
             }
         }
 
+        public async Task<UserResponse> GetUserById()
+        {
+            var user = await authRepository.GetUserById();
+
+            var response = new UserResponse
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email
+            };
+
+            return response;
+        }
+
         public async Task EditUser(EditUserRequest request)
         {
-            var user = await authRepository.GetUserByEmail(request.Email);
+            var user = await authRepository.GetUserById();
 
-            if (user is null)
-            {
-                throw new CustomException("User not found");
-            }
-
-            var checkPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+            var checkPassword = BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash);
 
             if (!checkPassword)
             {
                 throw new CustomException("Invalid password");
             }
 
-            user.UserName = request.NewUserName.Trim();
-            user.Email = request.NewEmail.Trim();
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            user.ModificationTime = DateTime.UtcNow;
-
-            if (await authRepository.GetUserByEmail(request.NewEmail) != null)
+            if (user.Email.ToLower() != request.Email.ToLower() && await authRepository.GetUserByEmail(request.Email) != null)
             {
                 throw new CustomException("Email already exists");
             }
+
+            user.UserName = request.UserName.Trim();
+            user.Email = request.Email.Trim();
+            if (!string.IsNullOrWhiteSpace(request.NewPassword)) user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.ModificationTime = DateTime.UtcNow;
 
             await authRepository.EditUser(user);
         }
 
         public async Task DeleteUser(DeleteUserRequest request)
         {
-            var user = await authRepository.GetUserByEmail(request.Email);
+            var user = await authRepository.GetUserById();
 
-            if (user is null)
-            {
-                throw new CustomException("User not found");
-            }
-
-            var checkPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+            var checkPassword = BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash);
 
             if (!checkPassword)
             {
@@ -152,12 +157,14 @@ namespace FoodReviewPlatform.Services.Implementations
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
+            var token = new JwtSecurityToken
+            (
                 issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddMonths(1),
-                signingCredentials: credentials);
+                signingCredentials: credentials
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

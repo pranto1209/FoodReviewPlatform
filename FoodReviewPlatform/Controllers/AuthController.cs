@@ -2,7 +2,6 @@
 using FoodReviewPlatform.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FoodReviewPlatform.Controllers
 {
@@ -11,34 +10,41 @@ namespace FoodReviewPlatform.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("login-user")]
-        public async Task<IActionResult> LoginUser(LoginRequest request)
+        public async Task<IActionResult> LoginUser([FromBody] LoginRequest request)
         {
             var response = await authService.LoginUser(request);
             return Ok(response);
         }
 
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser(RegisterRequest request)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequest request)
         {
             await authService.RegisterUser(request);
             return Ok();
         }
 
         [Authorize]
-        [HttpGet("get-my-profile")]
-        public IActionResult GetMyProfile()
+        [HttpGet("get-user-by-id")]
+        public async Task<IActionResult> GetUserById()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var username = User.FindFirstValue(ClaimTypes.Name);
-            var email = User.FindFirstValue(ClaimTypes.Email);
-
-            return Ok(new
-            {
-                UserId = userId,
-                UserName = username,
-                Email = email
-            });
+            var response = await authService.GetUserById();
+            return Ok(response);
         }
 
+        [Authorize]
+        [HttpPut("edit-user")]
+        public async Task<IActionResult> EditUser([FromBody] EditUserRequest request)
+        {
+            await authService.EditUser(request);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPut("delete-user")]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserRequest request)
+        {
+            await authService.DeleteUser(request);
+            return Ok();
+        }
     }
 }

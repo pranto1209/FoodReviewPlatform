@@ -4,7 +4,7 @@ using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Services.Interfaces;
-using FoodReviewPlatform.Utilities.Audits;
+using FoodReviewPlatform.Utilities.AuditInfos;
 using FoodReviewPlatform.Utilities.Exceptions;
 
 namespace FoodReviewPlatform.Services.Implementations

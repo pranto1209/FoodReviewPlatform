@@ -2,7 +2,9 @@
 
 namespace FoodReviewPlatform.Models.Requests
 {
-    public class DeleteUserRequest : BaseUserRequest
+    public class DeleteUserRequest
     {
+        [Required]
+        public string CurrentPassword { get; set; }
     }
 }

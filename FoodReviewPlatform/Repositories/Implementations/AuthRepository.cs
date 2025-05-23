@@ -1,6 +1,7 @@
 ﻿using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Repositories.Interfaces;
+using FoodReviewPlatform.Utilities.AuditInfos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Repositories.Implementations
@@ -10,6 +11,11 @@ namespace FoodReviewPlatform.Repositories.Implementations
         public async Task<User> GetUserByEmail(string email)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<User> GetUserById()
+        {
+            return await context.Users.FirstOrDefaultAsync(u => u.Id == AuditContext.UserId);
         }
 
         public async Task<List<string>> GetRolesByUser(long userId)

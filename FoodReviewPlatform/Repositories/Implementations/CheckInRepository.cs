@@ -4,7 +4,7 @@ using FoodReviewPlatform.Models.Domains;
 using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
-using FoodReviewPlatform.Utilities.Audits;
+using FoodReviewPlatform.Utilities.AuditInfos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Repositories.Implementations

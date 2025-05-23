@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using FoodReviewPlatform.Databases;
-using FoodReviewPlatform.Utilities.AuditHandlers;
 using FoodReviewPlatform.Utilities.Extensions;
+using FoodReviewPlatform.Utilities.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -54,8 +54,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseMiddleware<ExceptionMiddleware>();
+else
+{
+    app.UseMiddleware<ExceptionMiddleware>();
+}
 
 app.UseHttpsRedirection();
 

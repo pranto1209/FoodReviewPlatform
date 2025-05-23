@@ -11,7 +11,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             var request = new RestRequest(url, Method.Get);
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
@@ -29,7 +29,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             request.AddBody(body);
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
@@ -49,12 +49,12 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             request.AddBody(body);
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
 
-            if (!string.IsNullOrEmpty(origin) && !string.IsNullOrWhiteSpace(origin))
+            if (!string.IsNullOrWhiteSpace(origin) && !string.IsNullOrWhiteSpace(origin))
             {
                 request.AddHeader("origin", origin);
             }
@@ -76,7 +76,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             Console.WriteLine($"External Request Payload: {JsonSerializer.Serialize(body)}");
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
@@ -96,7 +96,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             request.AddBody(body);
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
@@ -116,7 +116,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             var request = new RestRequest(url, Method.Delete);
 
-            if (!string.IsNullOrEmpty(token) && !string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(token))
             {
                 request.AddHeader("authorization", token);
             }
