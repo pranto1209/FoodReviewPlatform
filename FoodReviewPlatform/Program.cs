@@ -1,10 +1,12 @@
 using Asp.Versioning;
 using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Utilities.Extensions;
-using FoodReviewPlatform.Utilities.Middlewares;
+using FoodReviewPlatform.Utilities.Middlewares.AuditMiddlewares;
+using FoodReviewPlatform.Utilities.Middlewares.ExceptionMiddlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "FoodReviewPlatform"
+    });
+});
 
 builder.Services.AddDbContext<FoodReviewPlatformDbContext>(options =>
 {
@@ -52,7 +61,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodReviewPlatform v1");
+    });
 }
 else
 {
@@ -72,7 +84,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseMiddleware<AuditInfoMiddleware>();
+app.UseMiddleware<AuditMiddleware>();
 
 app.MapControllers();
 

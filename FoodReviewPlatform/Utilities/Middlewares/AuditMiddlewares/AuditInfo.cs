@@ -1,4 +1,4 @@
-﻿namespace FoodReviewPlatform.Utilities.AuditInfos
+﻿namespace FoodReviewPlatform.Utilities.Middlewares.AuditMiddlewares
 {
     public class AuditInfo
     {

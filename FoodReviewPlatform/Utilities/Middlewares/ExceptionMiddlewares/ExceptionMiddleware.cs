@@ -1,8 +1,7 @@
-﻿using FoodReviewPlatform.Utilities.Exceptions;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 
-namespace FoodReviewPlatform.Utilities.Middlewares
+namespace FoodReviewPlatform.Utilities.Middlewares.ExceptionMiddlewares
 {
     public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {

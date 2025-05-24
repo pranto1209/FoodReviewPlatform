@@ -1,7 +1,7 @@
 ﻿using FoodReviewPlatform.Databases;
 using FoodReviewPlatform.Databases.Entities;
 using FoodReviewPlatform.Repositories.Interfaces;
-using FoodReviewPlatform.Utilities.AuditInfos;
+using FoodReviewPlatform.Utilities.Middlewares.AuditMiddlewares;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodReviewPlatform.Repositories.Implementations

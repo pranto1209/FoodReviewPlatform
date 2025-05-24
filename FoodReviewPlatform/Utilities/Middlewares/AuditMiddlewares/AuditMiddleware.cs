@@ -1,9 +1,8 @@
-﻿using FoodReviewPlatform.Utilities.AuditInfos;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace FoodReviewPlatform.Utilities.Middlewares
+namespace FoodReviewPlatform.Utilities.Middlewares.AuditMiddlewares
 {
-    public class AuditInfoMiddleware(RequestDelegate next)
+    public class AuditMiddleware(RequestDelegate next)
     {
         public async Task InvokeAsync(HttpContext context)
         {

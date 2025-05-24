@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace FoodReviewPlatform.Utilities.Exceptions
+namespace FoodReviewPlatform.Utilities.Middlewares.ExceptionMiddlewares
 {
     public class CustomException : Exception
     {

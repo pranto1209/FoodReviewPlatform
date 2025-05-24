@@ -4,7 +4,7 @@ using FoodReviewPlatform.Models.Requests;
 using FoodReviewPlatform.Models.Responses;
 using FoodReviewPlatform.Repositories.Interfaces;
 using FoodReviewPlatform.Services.Interfaces;
-using FoodReviewPlatform.Utilities.Exceptions;
+using FoodReviewPlatform.Utilities.Middlewares.ExceptionMiddlewares;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
