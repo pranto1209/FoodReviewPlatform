@@ -35,7 +35,7 @@ namespace FoodReviewPlatform.Services.Implementations
 
             var roles = await authRepository.GetRolesByUser(user.Id);
 
-            var token = CreateJwtToken(user, roles, configuration);
+            var token = CreateJwtToken(user, roles);
 
             var response = new LoginResponse
             {
@@ -51,40 +51,32 @@ namespace FoodReviewPlatform.Services.Implementations
 
         public async Task RegisterUser(RegisterRequest request)
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            var user = new User
             {
-                try
-                {
-                    var user = new User
-                    {
-                        UserName = request.UserName.Trim(),
-                        Email = request.Email.Trim(),
-                        PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                        InsertionTime = DateTime.UtcNow
-                    };
+                UserName = request.UserName.Trim(),
+                Email = request.Email.Trim(),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                InsertionTime = DateTime.UtcNow
+            };
 
-                    if (await authRepository.GetUserByEmail(request.Email) != null)
-                    {
-                        throw new CustomException("User already exists");
-                    }
-
-                    await authRepository.AddUser(user);
-
-                    var userRole = new UserRole
-                    {
-                        UserId = user.Id,
-                        RoleId = (int)UserRoleEnum.User
-                    };
-
-                    await authRepository.AddUserRole(userRole);
-
-                    scope.Complete();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+            if (await authRepository.GetUserByEmail(user.Email) is not null)
+            {
+                throw new CustomException("User already exists");
             }
+
+            await authRepository.AddUser(user);
+
+            var userRole = new UserRole
+            {
+                UserId = user.Id,
+                RoleId = (int)UserRoleEnum.User
+            };
+
+            await authRepository.AddUserRole(userRole);
+
+            scope.Complete();
         }
 
         public async Task<UserResponse> GetUserById()
@@ -139,7 +131,7 @@ namespace FoodReviewPlatform.Services.Implementations
             await authRepository.DeleteUser(user);
         }
 
-        private static string CreateJwtToken(User user, List<string> roles, IConfiguration configuration)
+        private string CreateJwtToken(User user, List<string> roles)
         {
             var claims = new List<Claim>
             {

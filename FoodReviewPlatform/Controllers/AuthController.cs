@@ -40,7 +40,7 @@ namespace FoodReviewPlatform.Controllers
         }
 
         [Authorize]
-        [HttpPut("delete-user")]
+        [HttpPost("delete-user")]
         public async Task<IActionResult> DeleteUser([FromBody] DeleteUserRequest request)
         {
             await authService.DeleteUser(request);
