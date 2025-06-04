@@ -10,7 +10,7 @@ namespace FoodReviewPlatform.Services.Interfaces
         Task<PaginatedData<LocationReposne>> GetNearbyLocations(double latitude, double longitude, FilteringRequest request);
         Task<LocationReposne> GetLocationById(long id);
         Task AddLocation(AddLocationRequest request);
-        Task UpdateLocation(UpdateLocationRequest request);
+        Task EditLocation(EditLocationRequest request);
         Task DeleteLocation(long id);
     }
 }

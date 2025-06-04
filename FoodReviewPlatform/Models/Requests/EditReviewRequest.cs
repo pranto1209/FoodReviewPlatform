@@ -1,6 +1,6 @@
 ﻿namespace FoodReviewPlatform.Models.Requests
 {
-    public class UpdateReviewRequest
+    public class EditReviewRequest
     {
         public long Id { get; set; }
         public int Rating { get; set; }

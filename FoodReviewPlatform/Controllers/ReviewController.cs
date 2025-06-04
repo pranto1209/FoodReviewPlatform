@@ -56,10 +56,10 @@ namespace FoodReviewPlatform.Controllers
         }
 
         [Authorize]
-        [HttpPut("update-review")]
-        public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewRequest request)
+        [HttpPut("edit-review")]
+        public async Task<IActionResult> EditReview([FromBody] EditReviewRequest request)
         {
-            await reviewService.UpdateReview(request);
+            await reviewService.EditReview(request);
             return Ok();
         }
 

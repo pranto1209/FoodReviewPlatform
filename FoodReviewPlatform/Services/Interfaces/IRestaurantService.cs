@@ -9,7 +9,7 @@ namespace FoodReviewPlatform.Services.Interfaces
         Task<PaginatedData<RestaurantResponse>> GetRestaurantsByLocation(long id, FilteringRequest request);
         Task<RestaurantResponse> GetRestaurantById(long id);
         Task AddRestaurant(AddRestaurantRequest request);
-        Task UpdateRestaurant(UpdateRestaurantRequest request);
+        Task EditRestaurant(EditRestaurantRequest request);
         Task DeleteRestaurant(long id);
     }
 }

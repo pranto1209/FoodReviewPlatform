@@ -33,10 +33,10 @@ namespace FoodReviewPlatform.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("update-restaurant")]
-        public async Task<IActionResult> UpdateRestaurant([FromBody] UpdateRestaurantRequest request)
+        [HttpPut("edit-restaurant")]
+        public async Task<IActionResult> EditRestaurant([FromBody] EditRestaurantRequest request)
         {
-            await restaurantService.UpdateRestaurant(request);
+            await restaurantService.EditRestaurant(request);
             return Ok();
         }
 

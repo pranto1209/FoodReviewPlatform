@@ -12,7 +12,7 @@ namespace FoodReviewPlatform.Services.Interfaces
         Task<ReviewResponse> GetReviewById(long id);
         Task<double> GetAverageRatingByRestaurant(long restaurantId);
         Task AddReview(AddReviewRequest request);
-        Task UpdateReview(UpdateReviewRequest request);
+        Task EditReview(EditReviewRequest request);
         Task DeleteReview(long id);
     }
 }

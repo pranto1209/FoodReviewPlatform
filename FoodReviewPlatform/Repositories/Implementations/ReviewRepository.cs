@@ -124,21 +124,21 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return averageRating;
         }
 
-        public async Task AddReview(Review request)
+        public async Task AddReview(Review review)
         {
-            await context.Reviews.AddAsync(request);
+            await context.Reviews.AddAsync(review);
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateReview(Review request)
+        public async Task EditReview(Review review)
         {
-            context.Reviews.Update(request);
+            context.Reviews.Update(review);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteReview(Review request)
+        public async Task DeleteReview(Review review)
         {
-            context.Reviews.Remove(request);
+            context.Reviews.Remove(review);
             await context.SaveChangesAsync();
         }
     }

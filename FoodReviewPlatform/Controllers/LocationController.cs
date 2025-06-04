@@ -40,10 +40,10 @@ namespace FoodReviewPlatform.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("update-location")]
-        public async Task<IActionResult> UpdateLocation([FromBody] UpdateLocationRequest request)
+        [HttpPut("edit-location")]
+        public async Task<IActionResult> EditLocation([FromBody] EditLocationRequest request)
         {
-            await locationService.UpdateLocation(request);
+            await locationService.EditLocation(request);
             return Ok();
         }
 

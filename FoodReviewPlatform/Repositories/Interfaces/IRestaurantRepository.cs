@@ -9,8 +9,8 @@ namespace FoodReviewPlatform.Repositories.Interfaces
     {
         Task<PaginatedData<RestaurantResponse>> GetRestaurantsByLocation(long id, FilteringRequest request);
         Task<Restaurant> GetRestaurantById(long id);
-        Task AddRestaurant(Restaurant request);
-        Task UpdateRestaurant(Restaurant request);
-        Task DeleteRestaurant(Restaurant request);
+        Task AddRestaurant(Restaurant restaurant);
+        Task EditRestaurant(Restaurant restaurant);
+        Task DeleteRestaurant(Restaurant restaurant);
     }
 }

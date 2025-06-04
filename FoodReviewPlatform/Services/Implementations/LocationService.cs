@@ -47,7 +47,7 @@ namespace FoodReviewPlatform.Services.Implementations
             await locationRepository.AddLocation(location);
         }
 
-        public async Task UpdateLocation(UpdateLocationRequest request)
+        public async Task EditLocation(EditLocationRequest request)
         {
             var location = await locationRepository.GetLocationById(request.Id);
 
@@ -60,7 +60,7 @@ namespace FoodReviewPlatform.Services.Implementations
             location.Latitude = request.Latitude;
             location.Longitude = request.Longitude;
 
-            await locationRepository.UpdateLocation(location);
+            await locationRepository.EditLocation(location);
         }
 
         public async Task DeleteLocation(long id)

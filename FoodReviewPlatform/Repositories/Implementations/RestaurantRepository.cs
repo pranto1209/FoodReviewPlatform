@@ -42,21 +42,21 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return await context.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task AddRestaurant(Restaurant request)
+        public async Task AddRestaurant(Restaurant restaurant)
         {
-            await context.Restaurants.AddAsync(request);
+            await context.Restaurants.AddAsync(restaurant);
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateRestaurant(Restaurant request)
+        public async Task EditRestaurant(Restaurant restaurant)
         {
-            context.Restaurants.Update(request);
+            context.Restaurants.Update(restaurant);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteRestaurant(Restaurant request)
+        public async Task DeleteRestaurant(Restaurant restaurant)
         {
-            context.Restaurants.Remove(request);
+            context.Restaurants.Remove(restaurant);
             await context.SaveChangesAsync();
         }
     }

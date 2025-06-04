@@ -66,21 +66,21 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return await context.Locations.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task AddLocation(Location request)
+        public async Task AddLocation(Location location)
         {
-            await context.Locations.AddAsync(request);
+            await context.Locations.AddAsync(location);
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateLocation(Location request)
+        public async Task EditLocation(Location location)
         {
-            context.Locations.Update(request);
+            context.Locations.Update(location);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteLocation(Location request)
+        public async Task DeleteLocation(Location location)
         {
-            context.Locations.Remove(request);
+            context.Locations.Remove(location);
             await context.SaveChangesAsync();
         }
 

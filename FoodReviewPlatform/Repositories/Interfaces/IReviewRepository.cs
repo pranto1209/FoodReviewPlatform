@@ -12,8 +12,8 @@ namespace FoodReviewPlatform.Repositories.Interfaces
         Task<PaginatedData<ReviewResponse>> GetReviewsByUser(FilteringRequest request);
         Task<Review> GetReviewById(long id);
         Task<double> GetAverageRatingByRestaurant(long restaurantId);
-        Task AddReview(Review request);
-        Task UpdateReview(Review request);
-        Task DeleteReview(Review request);
+        Task AddReview(Review review);
+        Task EditReview(Review review);
+        Task DeleteReview(Review review);
     }
 }

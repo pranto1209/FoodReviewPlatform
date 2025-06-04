@@ -87,15 +87,15 @@ namespace FoodReviewPlatform.Repositories.Implementations
             return existingCheckIn;
         }
 
-        public async Task AddCheckIn(CheckIn request)
+        public async Task AddCheckIn(CheckIn checkIn)
         {
-            await context.CheckIns.AddAsync(request);
+            await context.CheckIns.AddAsync(checkIn);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteCheckIn(CheckIn request)
+        public async Task DeleteCheckIn(CheckIn checkIn)
         {
-            context.CheckIns.Remove(request);
+            context.CheckIns.Remove(checkIn);
             await context.SaveChangesAsync();
         }
     }

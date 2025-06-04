@@ -60,7 +60,7 @@ namespace FoodReviewPlatform.Services.Implementations
             await reviewRepository.AddReview(review);
         }
 
-        public async Task UpdateReview(UpdateReviewRequest request)
+        public async Task EditReview(EditReviewRequest request)
         {
             var review = await reviewRepository.GetReviewById(request.Id);
 
@@ -73,7 +73,7 @@ namespace FoodReviewPlatform.Services.Implementations
             review.Comment = request.Comment;
             review.ReviewTime = DateTime.UtcNow;
 
-            await reviewRepository.UpdateReview(review);
+            await reviewRepository.EditReview(review);
         }
 
         public async Task DeleteReview(long id)

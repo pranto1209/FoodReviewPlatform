@@ -39,7 +39,7 @@ namespace FoodReviewPlatform.Services.Implementations
             await restaurantRepository.AddRestaurant(restaurant);
         }
 
-        public async Task UpdateRestaurant(UpdateRestaurantRequest request)
+        public async Task EditRestaurant(EditRestaurantRequest request)
         {
             var restaurant = await restaurantRepository.GetRestaurantById(request.Id);
 
@@ -50,7 +50,7 @@ namespace FoodReviewPlatform.Services.Implementations
 
             restaurant.Name = request.Name;
 
-            await restaurantRepository.UpdateRestaurant(restaurant);
+            await restaurantRepository.EditRestaurant(restaurant);
         }
 
         public async Task DeleteRestaurant(long id)
