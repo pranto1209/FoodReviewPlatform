@@ -19,6 +19,10 @@ A web application to discover restaurants based on location, check in, and write
 
 ![](Docs/3.png)
 
+![](Docs/4.png)
+
+![](Docs/5.png)
+
 
 ## Getting Started
 
