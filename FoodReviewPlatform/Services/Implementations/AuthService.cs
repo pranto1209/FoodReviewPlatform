@@ -53,30 +53,37 @@ namespace FoodReviewPlatform.Services.Implementations
         {
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var user = new User
+            try
             {
-                UserName = request.UserName.Trim(),
-                Email = request.Email.Trim(),
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                InsertionTime = DateTime.UtcNow
-            };
+                var user = new User
+                {
+                    UserName = request.UserName.Trim(),
+                    Email = request.Email.Trim(),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                    InsertionTime = DateTime.UtcNow
+                };
 
-            if (await authRepository.GetUserByEmail(user.Email) is not null)
-            {
-                throw new CustomException("User already exists");
+                if (await authRepository.GetUserByEmail(user.Email) is not null)
+                {
+                    throw new CustomException("User already exists");
+                }
+
+                await authRepository.AddUser(user);
+
+                var userRole = new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = (int)UserRoleEnum.User
+                };
+
+                await authRepository.AddUserRole(userRole);
+
+                scope.Complete();
             }
-
-            await authRepository.AddUser(user);
-
-            var userRole = new UserRole
+            catch (Exception ex)
             {
-                UserId = user.Id,
-                RoleId = (int)UserRoleEnum.User
-            };
-
-            await authRepository.AddUserRole(userRole);
-
-            scope.Complete();
+                throw new CustomException("An error occurred while registering the user", ex);
+            }
         }
 
         public async Task<UserResponse> GetUserById()
