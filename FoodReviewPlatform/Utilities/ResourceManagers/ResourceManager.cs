@@ -5,7 +5,7 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 {
     public class ResourceManager : IResourceManager
     {
-        public async Task<T> GetResourceFromUrlAsync<T>(string url, string? token)
+        public async Task<T?> GetResourceFromUrlAsync<T>(string url, string? token)
         {
             var client = new RestClient();
 
@@ -18,7 +18,12 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             RestResponse<T> queryResult = await client.ExecuteGetAsync<T>(request);
 
-            return JsonSerializer.Deserialize<T>(queryResult.Content);
+            if (queryResult.Content != null)
+            {
+                return JsonSerializer.Deserialize<T>(queryResult.Content);
+            }
+
+            return default;
         }
 
         public async Task<bool> PostResourceToUrlAsync<T>(string url, T body, string? token)
@@ -35,8 +40,6 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
             }
 
             RestResponse<T> queryResult = await client.ExecutePostAsync<T>(request);
-
-            Console.WriteLine($"External Response: {JsonSerializer.Serialize(queryResult)}");
 
             return queryResult.IsSuccessStatusCode;
         }
@@ -61,12 +64,10 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             RestResponse<T> queryResult = await client.ExecutePostAsync<T>(request);
 
-            Console.WriteLine($"External Response: {JsonSerializer.Serialize(queryResult)}");
-
             return queryResult.IsSuccessStatusCode;
         }
 
-        public async Task<RT> PostResourceToUrlAsync<T, RT>(string url, T body, string? token)
+        public async Task<RT?> PostResourceToUrlAsync<T, RT>(string url, T body, string? token)
         {
             var client = new RestClient();
 
@@ -83,9 +84,12 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
 
             RestResponse<RT> queryResult = await client.ExecutePostAsync<RT>(request);
 
-            Console.WriteLine($"External Request Response: {JsonSerializer.Serialize(queryResult)}");
+            if (queryResult.Content != null)
+            {
+                return JsonSerializer.Deserialize<RT>(queryResult.Content);
+            }
 
-            return JsonSerializer.Deserialize<RT>(queryResult.Content);
+            return default;
         }
 
         public async Task<bool> PutResourceToUrlAsync<T>(string url, T body, string? token)
@@ -104,8 +108,6 @@ namespace FoodReviewPlatform.Utilities.ResourceManagers
             Console.WriteLine($"External Request Payload: {JsonSerializer.Serialize(body)}");
 
             RestResponse queryResult = await client.ExecutePutAsync(request);
-
-            Console.WriteLine($"External Response: {JsonSerializer.Serialize(queryResult)}");
 
             return queryResult.IsSuccessStatusCode;
         }
